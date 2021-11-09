@@ -1,0 +1,77 @@
+Vagrant.configure("2") do |config|
+
+   # Configuration Variables
+   PROVIDER = "virtualbox"
+   BOX_BASE = "ubuntu/bionic64"
+   BOX_RAM_MB = "1024"
+   BOX_CPU_COUNT = "1"
+   IP_ADDRESS_SERVER = "192.168.33.10"
+   IP_ADDRESS_WORKER = "192.168.33.11"
+
+   # Boot timeout time (secs)
+   config.vm.boot_timeout = 600
+
+   # Configure the jenkins worker
+   config.vm.define "jenkins_worker" do |jenkins_worker|
+
+      # Box the machine will be brought up against
+      jenkins_worker.vm.box = BOX_BASE
+
+      # Network
+      jenkins_worker.vm.network "private_network", ip: IP_ADDRESS_WORKER
+
+      # Hostname
+      jenkins_worker.vm.hostname = "jenkins-worker"
+
+      # Modify settings specific to virtualbox
+      jenkins_worker.vm.provider PROVIDER do |vb|
+
+         # Set machine name
+         vb.name = "jenkins-worker"
+
+         # Customize the amount of memory
+         vb.memory = BOX_RAM_MB
+
+         # Customize the number of cpus
+         vb.cpus = BOX_CPU_COUNT
+
+      end 
+
+      # Provision the machine: Install requirements for and jenkins itself
+      jenkins_worker.vm.provision "shell", privileged: false, inline: "cd /vagrant/provision && ./worker.sh" # &
+
+   end
+
+   # Configure the jenkins server
+   config.vm.define "jenkins_server" do |jenkins_server|
+
+      # Box the machine will be brought up against
+      jenkins_server.vm.box = BOX_BASE
+
+      # Network
+      jenkins_server.vm.network "private_network", ip: IP_ADDRESS_SERVER
+      jenkins_server.vm.network "forwarded_port", guest: 8080, host: 8080, auto_correct: true
+
+      # Hostname
+      jenkins_server.vm.hostname = "jenkins-server"
+
+      # Modify settings specific to virtualbox
+      jenkins_server.vm.provider PROVIDER do |vb|
+
+         # Set machine name
+         vb.name = "jenkins-server"
+
+         # Customize the amount of memory
+         vb.memory = BOX_RAM_MB
+
+         # Customize the number of cpus
+         vb.cpus = BOX_CPU_COUNT
+
+      end 
+
+      # Provision the machine: Install requirements for and jenkins itself
+      jenkins_server.vm.provision "shell", path: 'provision/server.sh', keep_color: true
+
+   end
+
+end
