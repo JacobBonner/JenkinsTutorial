@@ -7,7 +7,7 @@ pipeline {
     stages {
 
         // Execute some steps in the container
-        stage('Test'){
+        stage('RunCommand'){
 
             // Run simple shell command to show functionality
             steps {

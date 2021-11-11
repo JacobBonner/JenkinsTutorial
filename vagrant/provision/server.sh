@@ -1,3 +1,5 @@
+### Adding apt key, jenkins apt entry, and updating Package Index ###
+
 # Add repository key to system
 echo "Adding apt-keys ..."
 wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
@@ -9,12 +11,26 @@ sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > \
 # Update local package index
 sudo apt update
 
+
+### Docker ###
+
+# Install Docker
+echo "Installing Docker ..."
+sudo curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+# Pull the latest python image
+sudo docker pull python
+
 # Add a jenkins user
 sudo useradd jenkins -m -G sudo,docker
 sudo passwd jenkins <<EOF
 jenkins
 jenkins
 EOF
+
+
+## Install java, zip, git, and jenkins ##
 
 # Install java
 echo "Installing java ..."
