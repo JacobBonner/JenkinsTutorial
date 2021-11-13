@@ -1,8 +1,37 @@
 # An Introduction to Jenkins
 
 
-## About
-This repository contains code and instructions for running a [Jenkins](https://www.jenkins.io/) server, and walks through an introduction to the tool and its functionalities. 
+## What is Jenkins?
+
+Jenkins is an open source framework used to manage all types of automation, from software builds and application testing, to deployments and more. It is a highly extensible automation server that can be used as a simple continuous integration server, or transformed into the continuous delivery hub for any project.
+
+## Why Use Jenkins?
+1. Open Source / Free
+    - As an open source project, there is a community around Jenkins that provides large support and thorough documentation.
+    - Anyone can examine the code, find and fix issues, or develop new features.
+    - There are hundredes of plugins available to support building, deploying and automating any project, and it is easy to create your own.
+2. Extensibility and Flexibility
+    - There are hundreds of community developed plugins, allowing you to integrate with practically every tool in the CI/CD toolchain. By using plugins you can extend the features and functionality of Jenkins, providing limitless possibilities.
+    - Jenkins is distributed, giving you the ability to easily distribute work across multiple machines. This allows you to drive builds, tests and deployments faster.
+3. Ease of Use
+    - As self-contained, java-based, and ready to run out-of-the-box for all major operating systems, Jenkins has a readily available and easy installation.
+    - Jenkins can be set up and configured via its web interface, which includes on-the-fly error checks and built-in help. There is documentation and examples directly included or easily accessible from your environment.
+    - Both the Jenkins UI and documentation are user-friendly, intuitive, and easy to navigate.
+
+## What Can Jenkins Do?
+
+Jenkins can be easily configured and extended, and comes with a multitude of plugins which allow great flexibility. Below are some of the many uses for Jenkins:
+
+1. Maintain, orchestrate, and accelerate the entire software development lifecycle.
+2. Integrate with various SCM systems.
+3. Manage and control software delivery processes throughout the entire lifecyle
+    - Build, Document, Test, Package, Deploy
+4. Generate reports.
+5. Push to various respositories.
+6. Notify stakeholders of build status.
+    - Slack, Email, etc
+
+And due to the plethora of avilable plugins in the community, Jenkins can do so much more.
 
 ___
 
@@ -11,7 +40,7 @@ ___
 
 1. Install Prerequisites: [VirtualBox](https://www.virtualbox.org/wiki/Downloads) , [Vagrant](https://www.vagrantup.com/downloads) , [Git](https://git-scm.com/downloads) , and a Terminal with an SSH client ([PS Core](https://github.com/powershell/powershell), [MobaXterm](https://mobaxterm.mobatek.net/), etc).
 
-2. From your terminal, run the command `git clone https://github.com/JacobBonner/JenkinsTutorial.git`.
+2. On Github, hit the 'Fork' button for this repository. The reason for forking rather simply cloning is for the use of webhooks in a future section. Then from your terminal, run the command `git clone https://github.com/{YOUR_USERNAME}/JenkinsTutorial.git`, or however you wish to clone your newly forked repository.
 
 3. From your terminal, navigate to the `vagrant` folder in the repo you just cloned, i.e. the directory `JenkinsTutorial/vagrant`.
 
@@ -139,6 +168,8 @@ After clicking 'New Item' from the Dashboard, enter the item name `hello-world`.
 
 4. Click on the build number link '#1', and it will take you to the build. Now click 'Console Output', and you should see some information printed out, including the execution and output of the build step you added, `echo 'Hello, World!'`.
 
+5. Now go back to the Jenkins Dashboard. You should see the new Project `hello-world` listed under 'All', which is a list of all of the Projects in your environment.
+
 
 ### 4.3 - Pipelines
 
@@ -218,6 +249,8 @@ Now we will create a Jenkins Pipeline. From the Dashboard, create a new item, gi
 
 4. Click on the build number link '#1', and it will take you to the build. Now click 'Console Output', and you should see some information printed out, including the execution and output of the build step you added, `echo 'Hello, World!'`.
 
+5. Now go back to the Jenkins Dashboard. You should see the new Pipeline `hello-world-pipeline` listed along with the first project `hello-world`.
+
 ### 4.4 - Parameters, Environment Variables, and a Job's Workspace
 
 #### __4.4.1 - Parametrizing a Job__
@@ -240,13 +273,13 @@ Now we will create a Jenkins Pipeline. From the Dashboard, create a new item, gi
         Good evening
         ```
     - Description: `A greeting to give.`
-    - Default Value: `Hello`
+    - _Note_: The default value for this type of parameter is the first option.
 3. Hit 'Add Parameter' and select the 'String' option from the drop down. Then for the options of this parameter enter the following for each ...
     - Name: `receiver`
     - Default Value: `World`
     - Description: `Who the greeting parameter is directed to, i.e. who will be receiving the greeting.`
 4. Now go down to the 'Build' section, and in the 'Execute Shell' step, replace `echo 'Hello, World!'` with `echo "${greeting}, ${receiver}!"`, and then hit 'Save'.
-5. Now back on the job's status page, because the purpose of the job has changed, hit the 'Rename' button at the bottom of the left hand side menu. Enter the new name `give-greeting` and hit 'Rename'.
+5. Now back on the job's status page, because the purpose of the job has changed, hit the 'Rename' button at the bottom of the left hand side menu. Enter the new name `give-greeting` and hit 'Rename'. You should see the new name appear in the Project's home page.
 6. Now click 'Build with Parameters'. Select the greeting you want to give and who the greeting should be directed towards. Then hit 'Build'.
 7. Under the 'Build History', click on '#2', then 'Console Output'. You should now see the invocation and result of the command `echo "${greeting}, ${receiver}!"` with the parameters that you passed.
 
@@ -257,7 +290,7 @@ In Jenkins, you can define your own environment variables both globally across J
 #### __4.4.3 - A Job's Workspace__
 Recall that a workspace is a disposable directory on the file system of a Node where work can be done by a Pipeline or Job. Every Job and Pipeline you have defined is given a dedicated workspace, where the job stores any files that are generated during a build or pulled from source control. Throughout the build of a job or pipeline, you can access the workspace, whether it be to run scripts that are stored in the workspace or to create new files.
 
-To access the workspace for a Job, you can either press the 'Workspace' option in the menu on the left side of a job's home page, or from the 'Status' page there is a 'Workspace' option under the project name.
+To access the workspace for a Job, you can either press the 'Workspace' option in the menu on the left side of a job's home page, or from the 'Status' page there is a 'Workspace' option under the project name. If you go the freestyle project `give-greeting`, you will see the 'Workspace', but it will be empty because we have not added any files to it.
 
 Since each build of a job uses the same workspace, it can be useful to clean up between runs. At the very top level of the workspace, you'll see a link in the left menu that reads 'Wipe Out Current Workspace'. Clicking this link, and selecting OK to confirm, will remove all files from the workspace. As shown in the configuration section for the jobs and pipelines, you can automatically clean up the workspace before each build, and also clean up the workspace once a build completes.
 
@@ -318,22 +351,22 @@ ___
 
 ### 5.1 - Tracking/Monitoring Build State
 
-Within Jenkins, many projects don't happen instantaneously, and it is often useful to have the ability to go into the system and monitor the current status of a build environment. As an example, we are going to create a simple pipeline job that runs for a few minutes so we can go in and monitor the build.
+Within Jenkins, many projects don't happen instantaneously, and it is often useful to have the ability to go into the system and monitor the current status of a build environment. As an example, we are going to create a simple pipeline prject that runs for a few minutes so we can go in and monitor the build.
 
-1. From the Jenkins Dashboard, click 'New Item'. Give it the name `learning-about-builds` and select the type 'Pipeline'.
+1. From the Jenkins Dashboard, hit 'New Item', give it the name `monitoring-build-state`, and select Pipeline.
 
-2. Copy the contents of the file ___ and paste it into the box under 'Pipeline script'. Check the box 'This project is parametrized' in the 'General' section, select 'String' parameter, and enter the default value, name and description according to how the parameter is defined in the Pipeline code. Then hit 'Save' at the bottom of the screen.
+2. Copy the contents of the file `pipelines\Pipeline_Part5_monitoring-and-artifacts.Jenkinsfile` and paste it into the box under 'Pipeline script'. Check the box 'This project is parametrized' in the 'General' section, select 'String' parameter, and enter the default value, name and description according to how the parameter is defined in the Pipeline code. Then hit 'Save' at the bottom of the screen.
 
 3. Now click 'Build with Parameters' on the left side of your screen. Enter the value 5 for 'secondsToSleep', and hit 'Build'.
 
 4. Right away, under 'Build History', you should see the following:
-    - A blinking gray dot. The color gray indicates that the pipeline has not been built before, and the blinking means that the build is in progress.
+    - A circle with three blue dots in the center, and a bar moving clockwise around the perimeter of the circle. The three dots indicates that the pipeline has not been built before, and the bar in the perimeter of the circle moving means that the build is in progress.
     - A number, which is the build number / build ID. It's a unique identifier that Jenkins uses to organize the builds associated with a a Project or Pipeline.
     - A striped line/pipe, which is a visual indicator on how long the build has been running, and how much longer before completion. Once Jenkins has built a Project or Pipeline several times, this bar gives a better indication on how much longer the job might run. 
 
-5. After the build is finished, the gray dot will turn blue, letting you know the job finished successfully, and the progress bar goes away. 
+5. After the build is finished, the blue circle with three dots will to a circle with a green check mark, letting you know the job finished successfully. Also the progress bar goes away, and is replaced by the time the build started.
 
-6. Click 'Build with Parameters' again, and enter 10 for 'secondsToSleep'. There will be a build schedule notification like before, but this time you should see a blinking blue dot instead of a gray one. The blue means the previous build finished successfully, and the blinking means the job is currently in progress. Instead of a striped bar, there is an empty bar that looks to be filling up as the job runs. This is a visual indicator on how long the build has been running and approximately how much is remaining.
+6. Click 'Build with Parameters' again, and enter 10 for 'secondsToSleep'. There will be a build schedule notification like before, but this time you should see a circle with the green check mark again, rather than the three blue dots. The green check mark means the previous build finished successfully, and the bar moving around the perimeter of the circle means the job is currently in progress. Instead of a striped bar, there is an empty bar that looks to be filling up as the job runs. This is a visual indicator on how long the build has been running and approximately how much is remaining.
 
 7. If the build finishes then trigger a new build, otherwise continue. On the Pipeline's status page you should see the 'Stage View'. This gives you the ability to see what stage the build is currently in, and you can also view the logs by hovering over the stage in progress and pressing 'Logs' when it comes up.
 
@@ -347,27 +380,31 @@ These are all just some of the ways of monitoring the status of a build, and see
 ### 5.2 - Polling SCM for Build Triggering
 An important part of any continuous integration or continuous deployment process is communicating with a Source Code Management system, like Github. In order to do so, we need a repository that already has a Jenkinsfile, which is where the pipeline is defined. The repository we will use is the Github repository for this project: https://github.com/JacobBonner/JenkinsTutorial.
 
-1. First, from the Dashboard click on the Pipeline `learning-about-builds` and go down to the 'Pipeline' section of the Configuration page. Rather than using the 'Pipeline script' definition that we added before, press the 'Definition' dropdown menu and select 'Pipeline script from SCM'. For the new options that appear enter the following:
+1. From the Jenkins Dashboard, click 'New Item'. Give it the name `poll-scm` and select the type 'Pipeline'.
+
+2. Rather than using the 'Pipeline script' definition directly in Jenkins, press the 'Definition' dropdown menu and select 'Pipeline script from SCM'. For the new options that appear enter the following:
     - __SCM__: Select 'Git' from the dropdown.
-        - __Repository URL__: https://github.com/JacobBonner/JenkinsTutorial.git
+        - __Repository URL__: https://github.com/{YOUR_USERNAME}/JenkinsTutorial.git
         - __Credentials__: You shouldn't need to enter any credentials because the repo is public/open. 
         - __Branches to build__: Change to '*/main'.
+    - __Script Path__: `pipelines\Pipeline_Part4_hello-world.Jenkinsfile`
     - Uncheck the box 'Lightweight checkout'.
-    - __Script Path__: `pipelines\Pipeline_Part5.Jenkinsfile`
 
-2. Now scroll back up to the 'Build Triggers' configuration section, and check the box 'Poll SCM'. The schedule is based on the syntax of cron. For this you should enter `* * * * *`, which will poll every minute on the minute.
+3. Now scroll back up to the 'Build Triggers' configuration section, and check the box 'Poll SCM'. The schedule is based on the syntax of cron. For this you should enter `* * * * *`, which will poll every minute on the minute.
 
-3. Hit 'Save' to return to the Pipeline's home page. Along with the standard set of options that appear in the menu on the left of the screen, there is a new option 'Git Polling Log', which describes when the specified repository was last polled and the status of that poll.
+4. Hit 'Save' to return to the Pipeline's home page. Along with the standard set of options that appear in the menu on the left of the screen, there is a new option 'Polling Log' or 'Git Polling Log', which describes when the specified repository was last polled and the status of that poll.
 
-4. Now we have to wait for the minute to tick over so that the polling occurs. Soon you should see a new build in 'Build History' that was triggered by the polling, and the 'Git Polling Log' should contain some new information.
+5. Now we have to wait for the minute to tick over so that the polling occurs. Soon you should see a new build in 'Build History' that was triggered by the polling, and the 'Git Polling Log' should contain some new information.
 
-5. From the Pipeline's 'Status' page, you can see that the system has done a checkout of the specified Github repository, so it was able to poll SCM and get the necessary information. Additionally, the pipeline defined in the Jenkins file you specified in configuration should have successfully completed.
+6. From the Pipeline's 'Status' page, you can see that the system has done a checkout of the specified Github repository, so it was able to poll SCM and get the necessary information. Additionally, the pipeline defined in the Jenkins file you specified in configuration should have successfully completed.
 
-6. The way this 'Poll SCM' feature works is by polling the specified repository, and if it finds changes then it will build, otherwise it will do nothing. In particular, go back to the 'Git Polling Log'. You may need to wait for the minute to tick over again before seeing another poll in the log. You should see:
+7. The way this 'Poll SCM' feature works is by polling the specified repository, and if it finds changes then it will build, otherwise it will do nothing. In particular, go back to the 'Git Polling Log'. You may need to wait for the minute to tick over again before seeing another poll in the log. You should see:
     - For the initial poll, there was no previous build or repository state to compare to, so changes were detected. That is why the new build was triggered.
     - For the second poll, Jenkins examined the repository again, but found that there were no changes since the previous poll. Thus, no build was triggered.
 
-7. In reality you wouldn't want to actually poll every minute, but you can specify a reasonable time that works well with when you make changes to your repository and also when other builds are happening in the rest of your Jenkins environment.
+8. In reality you wouldn't want to actually poll every minute, but you can specify a reasonable time that works well with when you make changes to your repository and also when other builds are happening in the rest of your Jenkins environment.
+
+
 
 
 ### 5.3 - Triggering Builds with Github Webhooks
@@ -394,16 +431,36 @@ An important part of any continuous integration or continuous deployment process
     - Then hit 'Add'.
 6. Now select the 'Credentials' dropdown menu and select the new credential you just created.
 7. Hit 'Test Connection', and you should see a verification message. Now our Github server connection is configured.
+8. Hit 'Save' at the bottom of the page.
 
 
 #### __5.3.2 - Create a Build Using Webhooks__
-**** TO DO ****
 
-For the most part, we really want to use Jenkins and SCM together, so that changes in the Github environment are mapped and pushed back into the Jenkins environment. We can do this through Webhooks.
+For the most part, the goal is to integrate and use Jenkins and SCM together, so that changes in the Github environment are automatically pushed back into the Jenkins environment. We can do this through Webhooks.
 
-1. Create a copy of this projct's repository for your own us, so that the hook can be associated with your own repository.
+There are several ways to trigger builds with webhooks, through various plugins and other methods, but the method you will use here does not require you to create a Webhook within Github itself.
 
-2. From the Dashboard to to the Pipeline
+1. Recall the fact that you forked this repository rather than just simply cloning it. The reason for doing so was for this section here. In order to successfuly generate a hook using your access token and username, the repo must be associated with your own Github.
+
+2. From the Jenkins Dashboard, hit 'New Item', give it the name `github-webhook` and select 'Multibranch Pipeline'. You will notice that the configure page is much more complex and has many more sections than Freestyle Projects or Pipelines. Feel free to look around at the configuration options in more detail.
+
+4. Under the section 'Branch Sources', click 'Add Source', then select 'Github'. Then fill in the following components as specified:
+    - __Credentials__: Press the button 'Add' and click the dropdown 'Jenkins'. In the popup window:
+        - Change 'Kind' to 'Username with password'.
+        - For 'Description' enter 'Github username and access token'.
+        - For 'Username' enter your Github username.
+        - For 'Password' enter the Github access token `jenkins-integration` that you created in the previous section.
+        - Then hit 'Add'.
+    - Now select the 'Credentials' dropdown menu and select the new credential you just created.
+    - Make sure the circle is filled in next to 'Repository HTTPS URL' and enter the URL `https://github.com/{YOUR_USERNAME}/JenkinsTutorial`
+
+5. Scroll down to the 'Build Configuration' section. Make sure 'Mode' is `by Jenkinsfile`, and under 'Script path' enter `pipelines/Pipeline_Part4_hello-world.Jenkinsfile`.
+
+6. Hit 'Save' at the bottom. You should be redirected to 'Scan Repository Log', under which there will be a log of the Pipeline scanning the Github repository you specified. It should find the branch `main` and the Jenkinsfile `pipelines/Pipeline_Part4_hello-world.Jenkinsfile`.
+
+7. Now click on the 'Status' option in the left menu, where you will see a list of jobs/projects for each of the branches that were found in the repository scan. Click on 'main', and then under 'Build History' click on '#1' and then 'Console Output'. In the log you will see a stage `Declarative: Checkout SCM` which went to Github and checked out the repository and found the Jenkinsfile you specified in the configuration. Then it proceeds by building the Pipeline specified in the Jenkinsfile, which in this case will just be the printing of 'Hello World!'.
+
+Now that we have the Pipeline `github-webhook` configured to scan the repository, we want to commit a change to the repository so that Jenkins will find it and trigger a new build. In your repository `https://github.com/{YOUR_USERNAME}/JenkinsTutorial`, make a change to a file that will not break any functionality (adding or removing whitespace), and then commit the change to the branch `main`.
 
 ### 5.4 - Build Artifacts
 Recall that an artifact is an immutable file generated during a build which is archived onto the Jenkins Controller. Most Projects and Pipelines in Jenkins will generate some sort of artifacts in the form of a report, product, or set of files. You can access the artifacts for a particular Project or Pipeline two ways:
@@ -581,6 +638,7 @@ This tutorial walked through the basic functionalities of Jenkins, but only scra
     - Using Folders to restrict access and create security realms
 
 4. Pipelines
+    - Adding post-stage and post-pipeline behavior with `post` blocks. ()
     - Creating pipeline gates, which is asking for user input
     - Job promotion for long-running pipelines
     - Multibranch repository automation
