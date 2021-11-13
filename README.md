@@ -378,7 +378,7 @@ These are all just some of the ways of monitoring the status of a build, and see
 
 
 ### 5.2 - Polling SCM for Build Triggering
-An important part of any continuous integration or continuous deployment process is communicating with a Source Code Management system, like Github. In order to do so, we need a repository that already has a Jenkinsfile, which is where the pipeline is defined. The repository we will use is the Github repository for this project: https://github.com/JacobBonner/JenkinsTutorial.
+An important part of any continuous integration or continuous deployment process is communicating with a Source Code Management system, like Github. In order to do so, we need a repository that already has a Jenkinsfile, which is where the pipeline is defined. The repository we will use is the fork that you made of this Github repository for this project: https://github.com/{YOUR_USERNAME}/JenkinsTutorial.
 
 1. From the Jenkins Dashboard, click 'New Item'. Give it the name `poll-scm` and select the type 'Pipeline'.
 
@@ -442,7 +442,7 @@ There are several ways to trigger builds with webhooks, through various plugins 
 
 1. Recall the fact that you forked this repository rather than just simply cloning it. The reason for doing so was for this section here. In order to successfuly generate a hook using your access token and username, the repo must be associated with your own Github.
 
-2. From the Jenkins Dashboard, hit 'New Item', give it the name `github-webhook` and select 'Multibranch Pipeline'. You will notice that the configure page is much more complex and has many more sections than Freestyle Projects or Pipelines. Feel free to look around at the configuration options in more detail.
+2. From the Jenkins Dashboard, hit 'New Item', give it the name `github-webhook` and select 'Multibranch Pipeline'. You will notice that the configuration page is much more complex and has many more sections than Freestyle Projects or Pipelines. Feel free to look around at the configuration options in more detail.
 
 4. Under the section 'Branch Sources', click 'Add Source', then select 'Github'. Then fill in the following components as specified:
     - __Credentials__: Press the button 'Add' and click the dropdown 'Jenkins'. In the popup window:
@@ -460,7 +460,9 @@ There are several ways to trigger builds with webhooks, through various plugins 
 
 7. Now click on the 'Status' option in the left menu, where you will see a list of jobs/projects for each of the branches that were found in the repository scan. Click on 'main', and then under 'Build History' click on '#1' and then 'Console Output'. In the log you will see a stage `Declarative: Checkout SCM` which went to Github and checked out the repository and found the Jenkinsfile you specified in the configuration. Then it proceeds by building the Pipeline specified in the Jenkinsfile, which in this case will just be the printing of 'Hello World!'.
 
-Now that we have the Pipeline `github-webhook` configured to scan the repository, we want to commit a change to the repository so that Jenkins will find it and trigger a new build. In your repository `https://github.com/{YOUR_USERNAME}/JenkinsTutorial`, make a change to a file that will not break any functionality (adding or removing whitespace), and then commit the change to the branch `main`.
+Now that we have the Pipeline `github-webhook` configured to scan the repository, we want to commit a change to the repository so that Jenkins will find it and trigger a new build. 
+1. In your repository `https://github.com/{YOUR_USERNAME}/JenkinsTutorial`, make a change to a file that will not break any functionality (adding or removing whitespace), and then commit the change to the branch `main`.
+2. Go back to the 'Status' page of the Pipeline 'Branch main' of `github-webhook`. You should se
 
 ### 5.4 - Build Artifacts
 Recall that an artifact is an immutable file generated during a build which is archived onto the Jenkins Controller. Most Projects and Pipelines in Jenkins will generate some sort of artifacts in the form of a report, product, or set of files. You can access the artifacts for a particular Project or Pipeline two ways:
