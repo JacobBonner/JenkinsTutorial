@@ -523,11 +523,27 @@ Recall the fact that you forked this repository rather than just simply cloning 
 
 
 
-#### __5.4.5 - Create a Pipeline in Jenkins and Trigger with Webhook__
+#### __5.4.5 - Create a Job in Jenkins and Trigger with Webhook__
+It is possible to integrate webhooks with Freestyle Jobs, Pipeline Jobs, and Multiconfigration Pipeline Jobs. In this case we are going to create a Pipeline.
+
+1. From the Jenkins Dashboard, hit 'New Item', give it the name `github-webhook` and select 'Pipeline'.
+
+2. On the configuration page, under the section 'Builds Triggers' check the box next to 'GitHub hook trigger for GITScm polling'. Then in the 'Pipeline' section, press the 'Definition' dropdown menu and select 'Pipeline script from SCM'. For the new options that appear enter the following:
+    - __SCM__: Select 'Git' from the dropdown.
+        - __Repository URL__: https://github.com/{YOUR_USERNAME}/JenkinsTutorial.git
+        - __Credentials__: From the dropdown menu, select the credentials `github-credentials`.
+        - __Branches to build__: Change to '*/main'.
+    - __Script Path__: `pipelines\Pipeline_Part4_hello-world.Jenkinsfile`
+    - Uncheck the box 'Lightweight checkout'.
+
+3. Now hit 'Save'. Back on the 'Status' page, hit 'Build Now', which will enable jenkins to register the GitHub webhook. This will ensure that from now on, whenever you push new changes to the specified repository it will automatically run this Pipeline in jenkins.
+
+4. Now that we have the Pipeline `github-webhook` configured to scan the repository, we want to commit a change to the repository so that Jenkins will find it and trigger a new build. 
+    - In your repository `https://github.com/{YOUR_USERNAME}/JenkinsTutorial`, make a change to a file that will not break any functionality (adding or removing whitespace), and then commit the change to the branch `main`.
+    - Go back to the 'Status' page of the Pipeline `github-webhook`. You should see a new build appear under 'Build History'.
 
 
-1. From the Jenkins Dashboard, hit 'New Item', give it the name `github-webhook` and select 'Multibranch Pipeline'. You will notice that the configuration page is much more complex and has many more sections than Freestyle Projects or Pipelines. Feel free to look around at the configuration options in more detail.
-
+#### Multiconfiguration Job
 4. Under the section 'Branch Sources', click 'Add Source', then select 'Github'. Then fill in the following components as specified:
     - __Credentials__: Press the button 'Add' and click the dropdown 'Jenkins'. In the popup window:
         - Change 'Kind' to 'Username with password'.
