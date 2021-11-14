@@ -30,6 +30,17 @@ jenkins
 EOF
 
 
+## Install snapd and ngrok ##
+
+# Install snapd
+echo "Installing snapd ..."
+sudo apt -y install snapd
+
+# Install ngrok
+echo "Installing ngrok ..."
+sudo snap install ngrok
+
+
 ## Install java, zip, git, and jenkins ##
 
 # Install java

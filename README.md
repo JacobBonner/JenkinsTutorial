@@ -405,44 +405,128 @@ An important part of any continuous integration or continuous deployment process
 8. In reality you wouldn't want to actually poll every minute, but you can specify a reasonable time that works well with when you make changes to your repository and also when other builds are happening in the rest of your Jenkins environment.
 
 
+### 5.3 - Build Artifacts
+Recall that an artifact is an immutable file generated during a build which is archived onto the Jenkins Controller. Most Projects and Pipelines in Jenkins will generate some sort of artifacts in the form of a report, product, or set of files. You can access the artifacts for a particular Project or Pipeline two ways:
+
+1. From a project's 'Status' page, there is an icon of an open cardboard box with the text 'Last Successful Artifacts'. The artifacts are listed underneath this, or you can click on the link 'Last Successful Artifacts' and access them from there. These artifacts are from the last successful build of the project, so that if the last few builds have failed you can still access the most recent artifacts easily.
+2. If you click on a particular build of a the project, and it successfully generated artifacts, then there will be the same icon on the build's 'Status' page next to the words 'Build Artifacts'. Again, the artifacts are listed underneath this, or you can click on the link 'Build Artifacts' to access them.
+
+To take a look at some artifacts, go to the Pipeline `monitoring-build-state`. You probably already noticed, but the last stage of the pipeline has a command `archiveArtifacts` that archives the specified artifacts. There should be artifacts available in both of the ways listed before, so find them either under 'Last Successful Artifacts' or click on an individual build to access the artifacts from it.
 
 
-### 5.3 - Triggering Builds with Github Webhooks
+### 5.4 - Triggering Builds with Github Webhooks
 
-#### __5.3.1 - Connecting Jenkins to Github__
-1. In order to use the Jenkins and Github integration for webhooks, we have to create a Github connection within Jenkins. From the Dashboard, click on the 'Manage Jenkins' option, 'Configure System', and then scroll down the 'Github' section. Press 'Add Github Server' to create a basic Github server definition, and give it the name 'Github'. Now we need to have some credentials in the form of an api key from our Github environment in order to be able to test our connection.
-2. To get an api key from your Github environment, go to [this link](https://github.com/settings/tokens/new). Also, the steps to get to that link are:
+For the most part, the goal is to integrate and use Jenkins with a SCM system, so that changes in an environment, like GitHub, are automatically pushed back into the Jenkins environment. We can do this through Webhooks.
+
+NOTE: For this section you will need to sign up for [ngrok](https://ngrok.com/). There is a free and paid version, but for the purposes of this tutorial you will only need the FREE version. If you don't wish to signup for and configure ngrok on your Jenkins server, then skip this section and continue to Part 6.
+
+
+#### __5.4.1 - Create a Personal Access Token in Github__
+Before we can communicate with GitHub from Jenkins, we need generate a GitHub Personal Access Token that will be used by Jenkins.
+
+1. To create a Personal Access Token in your Github environment, go to [this link](https://github.com/settings/tokens/new). Also, the steps to get to that link are:
     - Go to [Github](https://github.com)
     - Click on your user icon and select '[Settings](https://github.com/settings)' from the dropdown menu. 
     - Then scroll down and click on '[Developer Settings](https://github.com/settings/apps)' in the side bar. 
     - Click on the option '[Personal access tokens](https://github.com/settings/tokens)' and then '[Generate new token](https://github.com/settings/tokens/new)'. 
-3. For creating the token ...
+2. For creating the token:
     - Give it the Note/Name `jenkins-integration`. 
     - Check the box `repo` to give access to all of the repo data.
     - Check the box `admin:repo_hook` which will allow you to talk to the system.
     - Optionally, check the box `notifications` to make it possible to receive access notifications.
     - Then hit 'Generate Token' at the bottom of the page.
-4. Be sure to copy the token, as you won't be able to see it again.
-5. Now go back to the Github section of the Jenkins 'Configure System' page, and add your token as a Credential:
-    - Hit 'Add' next to the 'Credentials' option, and select 'Jenkins' from the drop down.
-    - Change 'Kind' to 'Secret text'.
-    - For 'Description' enter 'Github access token'.
-    - For 'Secret', enter your Github access token.
-    - Then hit 'Add'.
-6. Now select the 'Credentials' dropdown menu and select the new credential you just created.
-7. Hit 'Test Connection', and you should see a verification message. Now our Github server connection is configured.
-8. Hit 'Save' at the bottom of the page.
+3. Be sure to copy the token, as you won't be able to see it again.
+
+#### __5.4.2 - Create Necessary Credentials in Jenkins__
+In order to connect to Github from Jenkins and trigger builds with webhooks, we need to create two credentials in Jenkins.
+1. From the Jenkins Dashboard hit 'Manage Jenkins', then under the Security section hit 'Manage Credentials'. Under the section 'Stores scoped to Jenkins', there is one option with a Store and Domains. Click on the link `(global)` under Domains. Now on the the left side of the screen there is an option 'Add Credentials'.
+2. The first Credential that we are going to add is your GitHub Personal Access Token so that we can establish a connection to GitHub. Click 'Add Credentials', and enter the following for each field:
+    - __Kind__: Select 'Secret text' from the dropdown menu.
+    - __Secret__: Enter your Github Personal Access Token.
+    - __ID__: `github-personal-access-token`
+    - __Description__: `github-personal-access-token`
+    - Then hit 'OK'.
+3. The second Credential that we are going to add is your GitHub username in combination with your Personal Access Token (NOT your password). Click 'Add Credentials', and enter the following for each field:
+    - __Kind__: Select 'Username with password' from the dropdown menu.
+    - __Username__: Enter your Github username.
+    - __Password__: Enter your Github Personal Access Token.
+    - __ID__: `github-credentials`
+    - __Description__: `github-credentials`
+    - Then hit 'OK'.
+
+#### __5.4.3 - Configure GitHub Server in Jenkins__
+In order to use the Jenkins and Github integration for webhooks, we have to create a Github connection within Jenkins. 
+
+1. From the Jenkins Dashboard, click on the 'Manage Jenkins' option, 'Configure System', and then scroll down the 'Github' section. 
+2. Press 'Add Github Server' to create a basic Github server definition
+3. Give it the name 'Github'. 
+4. For Credentials, click on the dropdown menu and select the Credentials `github-personal-access-token`.
+5. Hit 'Test Connection', and you should see a verification message. Now your Github server connection is configured.
+6. Hit 'Save' at the bottom of the page.
 
 
-#### __5.3.2 - Create a Build Using Webhooks__
+#### __5.4.4 - Setup and Configure ngrok__
+It is not possible to add a webhook for Jenkins running on `localhost` as it doesn’t have a public URL exposed over the internet. To resolve this issue we are going to use ngrok, because it will expose the local server to the public internet.
 
-For the most part, the goal is to integrate and use Jenkins and SCM together, so that changes in the Github environment are automatically pushed back into the Jenkins environment. We can do this through Webhooks.
+1. If you don't already have an account for ngrok, then sign up [here](https://dashboard.ngrok.com/signup).
 
-There are several ways to trigger builds with webhooks, through various plugins and other methods, but the method you will use here does not require you to create a Webhook within Github itself.
+2. After logging in, you should be brought to the [Setup & Installation](https://dashboard.ngrok.com/get-started/setup) page. The first step is to install ngrok, which has already been done in the script __ while provisioning your Jenkins server.
 
-1. Recall the fact that you forked this repository rather than just simply cloning it. The reason for doing so was for this section here. In order to successfuly generate a hook using your access token and username, the repo must be associated with your own Github.
+3. Next you need to connect your ngrok account to your Jenkins server.
+    - From the directory `JenkinsTutorial\vagrant`, run the command `vagrant ssh jenkins_server`.
+    - Copy and paste the command shown for you under step 2 on the ngrok steup page. It should be `ngrok authtoken {YOUR_TOKEN}`.
 
-2. From the Jenkins Dashboard, hit 'New Item', give it the name `github-webhook` and select 'Multibranch Pipeline'. You will notice that the configuration page is much more complex and has many more sections than Freestyle Projects or Pipelines. Feel free to look around at the configuration options in more detail.
+4. Now you need to setup the tunnel.
+    - Run the command `ngrok http 8080`. You should then see text similar to the following:
+        ```
+        ngrok by @inconshreveable                                            (Ctrl+C to quit)  
+                                                
+        Session Status                online
+        Account                       {YOUR ACCOUNT NAME} (Plan: Free)
+        Version                       2.3.40
+        Region                        United States (us)
+        Web Interface                 http://127.0.0.1:4040
+        Forwarding                    http://82df-8-44-144-253.ngrok.io -> http://localhost:8080
+        Forwarding                    https://82df-8-44-144-253.ngrok.io -> http://localhost:8080
+
+        Connections                   ttl     opn     rt1     rt5     p50     p90
+                                    1       0       0.00    0.00    5.85    5.85 
+        ```
+    - DO NOT press 'Ctrl + C', because we want to keep this fired up.
+    - Note that any time you run this command with the free plan, the forwarding URL will change. Hence, you will need to update your Webhooks whenever you do this.
+    
+5. Copy the https 'Forwarding' URL, which in the example above is `https://82df-8-44-144-253.ngrok.io`
+
+#### __5.4.5 - Create a Webhook in GitHub__
+
+Recall the fact that you forked this repository rather than just simply cloning it. The reason for doing so was for this section here. In order to create a Webhook for a repository and successfuly use your access token and username, the repo must be associated with your own Github profile.
+
+1. To create a Webhook for your repository that you forked from this tutorial, go to `https://github.com/{YOUR_USERNAME}/JenkinsTutorial/settings/hooks/new`. The steps to get here are:
+    - Go to `https://github.com/{YOUR_USERNAME}/JenkinsTutorial/`
+    - Click on 'Settings' in the bar of options underneath the name of the repo.
+    - Click 'Webhooks' in the side bar that shows up.
+    - Then hit 'Add webhook'.
+
+2. To create the Webhook, follow the next stetps:
+    - __Payload URL__: This will be the 'Forwarding' URL that you copied after running `ngrok http 8080`, with `/github-webhook/` appended onto it. It will have the form `https://{YOUR_URL_ID}.ngrok.io/github-webhook/`.
+    - __Content Type__: Select 'application/json'
+    - __Which events would you like to trigger this webhook?__: Select the option 'Send me everything'.
+
+3. Then hit 'Add Webhook' at the bottom of the screen. If you go back to your terminal, you should see some new text indicating that you have received a POST from your new github webhook.
+    ```
+    HTTP Requests
+    -------------
+
+    POST /github-webhook/          200 OK 
+    ```
+
+
+
+
+#### __5.4.5 - Create a Pipeline in Jenkins and Trigger with Webhook__
+
+
+1. From the Jenkins Dashboard, hit 'New Item', give it the name `github-webhook` and select 'Multibranch Pipeline'. You will notice that the configuration page is much more complex and has many more sections than Freestyle Projects or Pipelines. Feel free to look around at the configuration options in more detail.
 
 4. Under the section 'Branch Sources', click 'Add Source', then select 'Github'. Then fill in the following components as specified:
     - __Credentials__: Press the button 'Add' and click the dropdown 'Jenkins'. In the popup window:
@@ -463,14 +547,6 @@ There are several ways to trigger builds with webhooks, through various plugins 
 Now that we have the Pipeline `github-webhook` configured to scan the repository, we want to commit a change to the repository so that Jenkins will find it and trigger a new build. 
 1. In your repository `https://github.com/{YOUR_USERNAME}/JenkinsTutorial`, make a change to a file that will not break any functionality (adding or removing whitespace), and then commit the change to the branch `main`.
 2. Go back to the 'Status' page of the Pipeline 'Branch main' of `github-webhook`. You should se
-
-### 5.4 - Build Artifacts
-Recall that an artifact is an immutable file generated during a build which is archived onto the Jenkins Controller. Most Projects and Pipelines in Jenkins will generate some sort of artifacts in the form of a report, product, or set of files. You can access the artifacts for a particular Project or Pipeline two ways:
-
-1. From a project's 'Status' page, there is an icon of an open cardboard box with the text 'Last Successful Artifacts'. The artifacts are listed underneath this, or you can click on the link 'Last Successful Artifacts' and access them from there. These artifacts are from the last successful build of the project, so that if the last few builds have failed you can still access the most recent artifacts easily.
-2. If you click on a particular build of a the project, and it successfully generated artifacts, then there will be the same icon on the build's 'Status' page next to the words 'Build Artifacts'. Again, the artifacts are listed underneath this, or you can click on the link 'Build Artifacts' to access them.
-
-To take a look at some artifacts, go to the Pipeline `learning-about-builds`. You probably already noticed, but the last stage of the pipeline has a command `archiveArtifacts` that archives the specified artifacts. There should be artifacts available in both of the ways listed before, so find them either under 'Last Successful Artifacts' or click on an individual build to access the artifacts from it.
 
 
 ___
@@ -551,7 +627,7 @@ Given that we only have the Controller and one additional Node (worker), the use
 
 ___
 
-## Part 7 - Testing
+## Part 7 - Testing and 'Post' Behavior
 1. Code coverage and test reports.
 2. Using test results to fail a job.
 
@@ -580,56 +656,65 @@ To find more details on the API for various pages in Jenkins, there is a link in
 
 
 ### 8.2 - URL Tips for Fetching Data
-In general, when retrieving information using the REST API, the URL format is
+In general, when retrieving information using the REST API, the URL format is `{YOUR_JENKINS_URL}/{RESOURCE_TYPE}/{RESOURCE_NAME}/api`, and if you want the data to be json it would be `{YOUR_JENKINS_URL}/{RESOURCE_TYPE}/{RESOURCE_NAME}/api/json`
+
+#### __Appending Arguments onto URLs__
+When you decide to add arguments onto the url for your request, you can do so by adding `?` at the end, and then add `&` between each argument that you use. Here are some examples of the arguments you can add:
+1. `pretty=true`
+    - Returns the data in a readable, nicely formatted manner
+2. `tree=property1,property2,property3,...`
+    - Allows you to specify what properties/fields to return from the data, separated by commas.
+3. `depth=X`, where X can be 1,2,3,...
+    - How many layers of data/properties to retrieve.
+
+As an example, if you wanted to retrieve json that is formatted for readability, and returns `property1` and `property2` from the data, the URL would be
 
 `
-{YOUR_JENKINS_URL}/{RESOURCE_TYPE}/{RESOURCE_NAME}/api
-`
-
-and if you want the data to be json it would be
-
-`
-{YOUR_JENKINS_URL}/{RESOURCE_TYPE}/{RESOURCE_NAME}/api/json
-`
-
-When you decide to add arguments onto the url for your request, you can do so by adding `?` at the end, and then add a `&` between each argument that you use. For example, if you want the json output to be nicely formatted you can add `pretty=true`, or if you want to specify which properties to retrieve you can use `tree=` and then specify the data fields with `,` between each.
-
-`
-{YOUR_JENKINS_URL}/{RESOURCE_TYPE}/{RESOURCE_NAME}/api/json?pretty=true&tree={PROPERTIES_TO_FETCH}
+{YOUR_JENKINS_URL}/{RESOURCE_TYPE}/{RESOURCE_NAME}/api/json?pretty=true&tree=property1,property2
 `
 
 ### 8.3 - Triggering a build via the REST API
-Now are going to trigger a build of the freestyle Project/Job `hello-world`.
+Now we are going to trigger a build of the freestyle Project/Job `hello-world`.
 1. From your command line, run the command
 
     `
-    curl -u {USER_NAME}:{API_TOKEN} {JENKINS_URL}/job/hello-world/build --data-urlencode json
+    curl -u {USER_NAME}:{API_TOKEN} {JENKINS_URL}/job/hello-world/build --data-urlencode json=''
     `
 
 2. Now from the Jenkins Dashboard go to the freestyle Project `hello-world`. If not already, you should soon see a new build in progress or finished.
 
-### 8.4 Retrieving Various Information
-- Job information
-- Build information
-- Queue information
-  
-**** TO DO ****
+### 8.4 - Retrieving Various Information via the REST API
+As mentioned before, you can retrieve various information from Jenkins using the REST API. Below is a list of some of the data you can request, along with the generalized URL you would use.
+1. Job Information
 
-## Part 12 - Extending Jenkins w/ Plug Ins
-Jenkins has hundreds of community developed plugins that can extend its features and functionality, providing limitless possibilities. By adding plugins, you aqcuire many more configuration options for jobs, from new parameters, to build steps, and more. Below are some ways that plugins can be used:
+    `
+    curl -u {USER_NAME}:{API_TOKEN} {YOUR_JENKINS_URL}/job/{JOB_NAME}/api/json?pretty=true
+    `
+2. Information of a Specified Build of a Job
 
-1. Integrating with Slack and Email to send notifications, updates, status, etc.
-2. Scaling Builds with Other Cloud Services
+    `
+    curl -u {USER_NAME}:{API_TOKEN} {YOUR_JENKINS_URL}/job/{JOB_NAME}/{BUILD_NUMBER}/api/json?pretty=true
+    `
+3. The Build Queue
 
-And many more!
+    `
+    curl -u {USER_NAME}:{API_TOKEN} {YOUR_JENKINS_URL}/queue/api/json?pretty=true
+    `
 
+3. Information on the Nodes (Controller and other Nodes)
 
-## Part 13 - Further Topics and Next Steps
+    `
+    curl -u {USER_NAME}:{API_TOKEN} {YOUR_JENKINS_URL}/computer/api/json?pretty=true
+    `
+
+For example, run the command `curl -u {USER_NAME}:{API_TOKEN} {YOUR_JENKINS_URL}/computer/api/json?pretty=true`
+
+## Part 9 - Further Topics and Next Steps
 
 This tutorial walked through the basic functionalities of Jenkins, but only scratched the surface of what you can accomplish by using this tool. Below are some further topics to consider exploring:
 
 1. Using Folders and Views to organize jobs
-    - Can filter the most important projects
+    - Can filter the most important projects, or group projects together by what they accomplish or do
 
 2. Triggering Downstream Builds
     - Trigger the build of one job when another job completes
@@ -650,7 +735,14 @@ This tutorial walked through the basic functionalities of Jenkins, but only scra
 5. Automating software and tool installation on agents
     - Running commands and installing in Pipelines
     - Use Dockerfile for specifying containers, and creating docker images
+
 8. Global Libraries for pipelines
+
+9. Finding and using more Plugins
+    - Jenkins has hundreds of community developed plugins that can extend its features and functionality, providing limitless possibilities. By adding plugins, you aqcuire many more configuration options for jobs, from new parameters, to build steps, and more. Below are some ways that plugins can be used:
+        - Integrating with Slack and Email to send notifications, updates, status, etc.
+        - Scaling Builds with Other Cloud Services
+        - And many more!
 
 Additionally, next steps to consider are exploring the official [Jenkins](https://www.jenkins.io) website, and potentially contributing to the code and the community in some way.
 
