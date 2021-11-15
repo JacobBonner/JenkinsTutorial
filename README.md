@@ -251,7 +251,7 @@ Now we will create a Jenkins Pipeline. From the Dashboard, create a new item, gi
 
 5. Now go back to the Jenkins Dashboard. You should see the new Pipeline `hello-world-pipeline` listed along with the first project `hello-world`.
 
-### 4.4 - Parameters, Environment Variables, and a Job's Workspace
+### 4.4 - Parameters, Global Pipeline Variables, and a Job's Workspace
 
 #### __4.4.1 - Parametrizing a Job__
 1. From the Dashboard, click on the freestyle job `hello-world`, and then hit 'Configure'. In the 'General' section of the configuration page, check the box 'This project is parametrized'. When you click 'Add Parameter' you will see a dropdown menu of the type of parameters you can add:
@@ -283,9 +283,27 @@ Now we will create a Jenkins Pipeline. From the Dashboard, create a new item, gi
 6. Now click 'Build with Parameters'. Select the greeting you want to give and who the greeting should be directed towards. Then hit 'Build'.
 7. Under the 'Build History', click on '#2', then 'Console Output'. You should now see the invocation and result of the command `echo "${greeting}, ${receiver}!"` with the parameters that you passed.
 
-#### __4.4.2 - Environment Variables__
+#### __4.4.2 - Global Pipeline Variables__
 
-In Jenkins, you can define your own environment variables both globally across Jenkins and on a per job basis. There is also a set of environment variables that are set automatically in each environment, which can be found at `${YOUR_JENKINS_HOST}/env-vars.html` on your Jenkins master server. Since your instance of Jenkins is running on a local VM and was configured for port 8080, this will be http://localhost:8080/env-vars.html/.
+Global Pipeline variables are variables that are available directly in pipelines and most often automatically generated.
+
+The different types of Global Variables are
+1. `env`
+    - Offers access to a set of environment variables
+    - You can define your own environment variables both globally across Jenkins and on a per job basis. There is also a set of environment variables that are set automatically in each environment, which can be found at `${YOUR_JENKINS_HOST}/env-vars.html` on your Jenkins master server. Since your instance of Jenkins is running on a local VM and was configured for port 8080, this will be http://localhost:8080/env-vars.html/.
+2. `params`
+    - Exposes all parameters defined in the build as a read-only map.
+3. `currentBuild`
+    - Represents the current build of a Pipeline, and has various readable properties. For example:
+        - `number`, the build number
+        - `result`, the result of a build (SUCCESS, UNSTABLE, or FAILURE). May be null for an in-progress build.
+        - `currentResult`, the current result of a build (SUCCESS, UNSTABLE, or FAILURE). Will never be null.
+        - `duration`, the duration of the build in milliseconds.
+    - Some of the properties, like `currentStatus`, are also writeable. For example, if you have some condition in a pipeline that you want to change the pipeline status, then you can do so.
+4. `scm`
+    - Represents the SCM configuration in a multibranch project build.
+5. `docker`
+    - Offers convenient access to Docker-related functions from a Pipeline script. 
 
 #### __4.4.3 - A Job's Workspace__
 Recall that a workspace is a disposable directory on the file system of a Node where work can be done by a Pipeline or Job. Every Job and Pipeline you have defined is given a dedicated workspace, where the job stores any files that are generated during a build or pulled from source control. Throughout the build of a job or pipeline, you can access the workspace, whether it be to run scripts that are stored in the workspace or to create new files.
@@ -308,9 +326,13 @@ Let's recap Projects and Pipelines, and their various components:
 3. Parameters
     - Both Freestyle Project and Pipelines support parameters
     - There are many available types, and more can be added via plug ins.
-4. Environment Variables
-    - Default Jenkins environment variables
-    - You can create your own
+4. Global Pipeline Variables
+    - `env`
+        - Default Jenkins environment variables
+        - You can create your own
+    - `currentBuild`
+        - Various readable properties on the current build of a pipeline
+    - And other types of global variables
 5. Workspaces
     - Each job has a workspace on the node that it builds on
     - Can run scripts and access files stored in the workspace 
@@ -326,11 +348,11 @@ Now we will create a Pipeline that brings together all of the components from th
         - Where you can define environment variables. This section can be added before the `stages` or within a `stage`. Depending on where it is placed, the variables defined in it either exist in the global pipeline scope, or the scope specific to the stage they are defined in.
     - 'Build' `stage`
         - There is an `environment` block defining an environment variable that exists only in the scope of this stage.
-        - In the `steps` of this stage: the `greeting` is printed to the `receiver`, the global-scope env variable is printed, and the env variable defined in this stage is printed.
+        - In the `steps` of this stage: the `greeting` is printed to the `receiver`, the global-scope env variable is printed, the env variable defined in this stage is printed, and the current build's current status is printed.
     - 'Test' `stage`
-        - In the `steps` of this stage: the `BUILD_NUMBER` and `JOB_NAME` default environment variables are printed, the global-scope env variable is printed, and the env variable defined in the 'Build' stage is printed but will be 'null' because it is out of scope.
+        - In the `steps` of this stage: the `BUILD_NUMBER` and `JOB_NAME` default environment variables are printed, the global-scope env variable is printed, the env variable defined in the 'Build' stage is printed but will be 'null' because it is out of scope, and the current build's current status is printed.
     - 'Deploy' `stage`
-        - In the `steps` of this stage: a script stored in the workspace is executed using the `WORKSPACE` default environment variable, the global-scope env variable is printed, and the env variable defined in the 'Build' stage is printed but will be 'null' because it is out of scope.
+        - In the `steps` of this stage: a script stored in the workspace is executed using the `WORKSPACE` default environment variable, the global-scope env variable is printed, the env variable defined in the 'Build' stage is printed but will be 'null' because it is out of scope, and the current build's current status is printed.
 
 4. Now hit 'Save'. Then press 'Build Now' on the Pipeline's home page. You probably noticed that even though there are parameters defined in the Pipeline, you were not prompted to enter any parameters just now. That is because jenkins needs to read the Pipeline code on the first build to get the configuration defined in it, and then it will be added to the configuration in the jenkins UI.
 
@@ -523,8 +545,8 @@ Recall the fact that you forked this repository rather than just simply cloning 
 
 
 
-#### __5.4.5 - Create a Job in Jenkins and Trigger with Webhook__
-It is possible to integrate webhooks with Freestyle Jobs, Pipeline Jobs, and Multiconfigration Pipeline Jobs. In this case we are going to create a Pipeline.
+#### __5.4.6 - Create a Job in Jenkins and Trigger with a Webhook__
+It is possible to configure Freestyle Jobs, Pipeline Jobs, and Multiconfigration Pipeline Jobs for integration with GitHub webhooks. In this case we are going to create a Pipeline.
 
 1. From the Jenkins Dashboard, hit 'New Item', give it the name `github-webhook` and select 'Pipeline'.
 
@@ -536,34 +558,13 @@ It is possible to integrate webhooks with Freestyle Jobs, Pipeline Jobs, and Mul
     - __Script Path__: `pipelines\Pipeline_Part4_hello-world.Jenkinsfile`
     - Uncheck the box 'Lightweight checkout'.
 
-3. Now hit 'Save'. Back on the 'Status' page, hit 'Build Now', which will enable jenkins to register the GitHub webhook. This will ensure that from now on, whenever you push new changes to the specified repository it will automatically run this Pipeline in jenkins.
+3. Now hit 'Save'. Back on the 'Status' page, hit 'Build Now', which will enable jenkins to register the GitHub webhook. This will ensure that from now on, whenever you push new changes to the specified repository it will automatically run this Pipeline in jenkins. 
+    - After the first build finishes, you will notice the first stage in the 'Stage View' is `Declarative: Checkout SCM`. This is the process of Jenkins fetching the specified repository, noticing changes, and checking out the specified branch(es).
 
 4. Now that we have the Pipeline `github-webhook` configured to scan the repository, we want to commit a change to the repository so that Jenkins will find it and trigger a new build. 
     - In your repository `https://github.com/{YOUR_USERNAME}/JenkinsTutorial`, make a change to a file that will not break any functionality (adding or removing whitespace), and then commit the change to the branch `main`.
     - Go back to the 'Status' page of the Pipeline `github-webhook`. You should see a new build appear under 'Build History'.
-
-
-#### Multiconfiguration Job
-4. Under the section 'Branch Sources', click 'Add Source', then select 'Github'. Then fill in the following components as specified:
-    - __Credentials__: Press the button 'Add' and click the dropdown 'Jenkins'. In the popup window:
-        - Change 'Kind' to 'Username with password'.
-        - For 'Description' enter 'Github username and access token'.
-        - For 'Username' enter your Github username.
-        - For 'Password' enter the Github access token `jenkins-integration` that you created in the previous section.
-        - Then hit 'Add'.
-    - Now select the 'Credentials' dropdown menu and select the new credential you just created.
-    - Make sure the circle is filled in next to 'Repository HTTPS URL' and enter the URL `https://github.com/{YOUR_USERNAME}/JenkinsTutorial`
-
-5. Scroll down to the 'Build Configuration' section. Make sure 'Mode' is `by Jenkinsfile`, and under 'Script path' enter `pipelines/Pipeline_Part4_hello-world.Jenkinsfile`.
-
-6. Hit 'Save' at the bottom. You should be redirected to 'Scan Repository Log', under which there will be a log of the Pipeline scanning the Github repository you specified. It should find the branch `main` and the Jenkinsfile `pipelines/Pipeline_Part4_hello-world.Jenkinsfile`.
-
-7. Now click on the 'Status' option in the left menu, where you will see a list of jobs/projects for each of the branches that were found in the repository scan. Click on 'main', and then under 'Build History' click on '#1' and then 'Console Output'. In the log you will see a stage `Declarative: Checkout SCM` which went to Github and checked out the repository and found the Jenkinsfile you specified in the configuration. Then it proceeds by building the Pipeline specified in the Jenkinsfile, which in this case will just be the printing of 'Hello World!'.
-
-Now that we have the Pipeline `github-webhook` configured to scan the repository, we want to commit a change to the repository so that Jenkins will find it and trigger a new build. 
-1. In your repository `https://github.com/{YOUR_USERNAME}/JenkinsTutorial`, make a change to a file that will not break any functionality (adding or removing whitespace), and then commit the change to the branch `main`.
-2. Go back to the 'Status' page of the Pipeline 'Branch main' of `github-webhook`. You should se
-
+    - Click on the new build that has appeared and go to 'Console Output'. You should see the checkout process, which contains your new commit message, and then the remaining stages of the Pipeline executing.
 
 ___
 
@@ -643,9 +644,116 @@ Given that we only have the Controller and one additional Node (worker), the use
 
 ___
 
-## Part 7 - Testing and 'Post' Behavior
-1. Code coverage and test reports.
-2. Using test results to fail a job.
+
+## Part 7 - Testing and Post-Execution Behaviors
+### 7.1 - Post-Execution Behaviors
+In Jenkins Pipelines we may want to define additional steps following the completion of specific stages or the pipeline as a whole. For example, we may want to send a slack message or an email at the end of a pipeline if a build fails. The way we can do this in Jenkins Pipeline is with a `post` section, which -- depending on the location of the `post` section within the Pipeline -- defines one or more additional steps that are run upon the completion of a Pipeline or stage. 
+
+The `post` block supports a number of different condition blocks, allowing the execution of steps inside each condition depending on the build status of the Pipeline or stage. The supported condition blocks are shown below, appearing in the order that they would be executed if written:
+1. `always`
+    - Run the steps in this section regardless of the build status of the Pipeline or stage that preceeds it.
+2. `changed`
+    - Only run the steps in this section if the current build of a Pipeline or stage has a different build status than the previous build.
+3. `fixed`
+    - Only run the steps in this section if the current build of a Pipeline or stage is successful and the previous build failed or was unstable.
+4. `regression`
+    - Only run the steps in this section if the current build of a Pipeline or stage has build status of failure, unstable, or aborted and the previous build was successful.
+5. `aborted`
+    - Only run the steps in this section if the current build of Pipeline or stage has an 'aborted' status, usually due to the Pipeline being manually aborted.
+6. `failure`
+    - Only run the steps in this section if the current build of a Pipeline or stage has the 'failed' status.
+7. `success`
+    - Only run the steps in this section if the current build of a Pipeline or stage has the 'success' status
+8. `unstable`
+    - Only run the steps in this section if the current build of a Pipeline or stage has the 'unstable' status, usually caused by test failures, code violations, etc.
+9. `unsuccessful`
+    - Only run the steps in this section if the current build of a Pipeline or stage has NOT the 'success' status.
+10. `cleanup`
+    - Run the steps in this section after every other post condition has been evaluated, regardless of the Pipeline or stage status.
+
+
+
+You can find more detail here: https://www.jenkins.io/doc/book/pipeline/syntax/#post.
+
+Now that you have an idea of the post-condition sections of a Jenkins Pipeline, it's time to create a Pipeline that utilizes them.
+1. From the Jenkins Dashboard, click 'New Item', name it `testing-and-post-behavior`, and select 'Pipeline'
+2. Under the 'Pipeline' section of the configuration page, copy and paste the contents of the file ___ into the 'Pipeline script'.
+    - Note that all of the possible `post` sections are included, so you can experiment with the Pipeline and force different post-condition blocks. Further note that they are in reverse order of what I presented earlier, and this is to show that no matter where each section is listed in the `post` block, the order of execution will always be consistent with Jenkins' rules.
+3. Now hit 'Save' and then 'Build Now'. After the build appears under 'Build History', click on it and go to the 'Console Output'. 
+    - Throughout the log you should see the output 'Build Complete!', 'All Tests Passed!', and 'Deployment Finished', from the Build, Test, and Deploy post-stage blocks, respectively. 
+    - Additionally, you will see the following four lines within the pipeline `post` section, which are from the `always`, `changed`, `success`, and `cleanup` sections, in order:
+        ```
+        This will always run!
+        
+        Pipeline status of this build is different than the previous build!
+        
+        Pipeline execution was a success!
+        
+        This is always the last section to run, regardless of build status!
+        ```
+
+### 7.2 - Testing
+
+As part of a multi-stage Pipeline process, we might perform tasks like building, testing, and deploying. In this case particularly, if any of the sections fail then we do not want to proceed with future components of the Pipeline. The idea here is that we can build applications and stop the deployment process at any time if something goes wrong. 
+
+We will now create a pipeline to explore on a very simple scale, the idea of building, testing, and deploying in a Pipeline, and what happens when any step of the process fails. Additionally, this section highlights more of the possible sections within `post` blocks.
+
+
+1. From the Jenkins Dashboard, click on the Pipeline `testing-and-post-behavior`, and then hit 'Configure'.
+
+2. In the 'Pipeline' section, replace the 'Pipeline script' with the contents of the file ___. This is identical to the previous code for the pipeline, except there are some simple build and test steps. Then hit 'Save'.
+
+3. Press 'Build Now' and then go to the 'Console Output' of the build when it comes up.
+    - Again, throughout the log you should see the output 'Build Complete!', 'All Tests Passed!', and 'Deployment Finished', from the Build, Test, and Deploy post-stage blocks, respectively. 
+    - Additionally, you will see the following three lines within the pipeline `post` section, which are from the `always`, `success`, and `cleanup` sections, in order:
+        ```
+        This will always run!
+        
+        Pipeline execution was a success!
+        
+        This is always the last section to run, regardless of build status!
+        ```
+        - Note that the output from the `changed` section did not show up because the build status was SUCCESS on the previous build as well.
+
+4. Now go back to the Pipeline's 'Status' page, and then hit 'Configure'. Once again replace the 'Pipeline script' section, this time with the contents of the file ___. This is identical to the previous code for the pipeline, except this code intentionally fails in the 'Test' stage. Then hit 'Save'.
+
+5. Press 'Build Now' and then go to the 'Console Output' of the build when it comes up.
+    - Throughout the log you should see the output 'Build Complete!'. However, this time the pipeline failed in the 'Test' stage and exited, resulting in a skip of the 'Deploy' stage and a FAILED status for the build.
+    - Additionally, you will see the following six lines within the pipeline `post` section, which are from the `always`, `changed`, `regression`, `unsuccessful`, `failure`, and `cleanup` sections, in order:
+        ```
+        This will always run!
+
+        Pipeline status of this build is different than the previous build!
+
+        Pipeline status of this build is failure, unstable, or aborted, and the previous build was success!
+
+        Pipeline execution was NOT success!
+
+        Pipeline execution was a failure!
+
+        This is always the last section to run, regardless of build status!
+        ```
+        - Note that the output from the `changed` section shows up again, because the previous build was successful while this one failed.
+
+6. Once again, go back to the Pipeline's 'Status' page, and then hit 'Configure'. Replace the 'Pipeline script' section, this time with the contents of the file ___. This is identical to the previous code for the pipeline, except this code fixes the failed test. Then hit 'Save'.
+
+7. Press 'Build Now' and then go to the 'Console Output' of the build when it comes up.
+    - Again, throughout the log you should see the output 'Build Complete!', 'All Tests Passed!', and 'Deployment Finished', from the Build, Test, and Deploy post-stage blocks, respectively. 
+    - Additionally, you will see the following five lines within the pipeline `post` section, which are from the `always`, `changed`, `fixed`, `success`, and `cleanup` sections, in order:
+        ```
+        This will always run!
+
+        Pipeline status of this build is different than the previous build!
+
+        Pipeline status of this build is success, and the previous build was failed or unstable!
+        
+        Pipeline execution was a success!
+
+        This is always the last section to run, regardless of build status!
+        ```
+        - Note that the output from the `changed` section shows up again, because the previous build failed while this one succeeded.
+
+The different versions of the pipeline used throughout this section are obviously very simple, and real-world Pipelines would have much more complex stages for building, testing, deploying, and more. However, the purpose of the pipelines was to show the various post-execution stage and pipeline behaviors, and that when a stage fails in a pipeline all of the following stages are skipped.
 
 
 ___
@@ -741,12 +849,10 @@ This tutorial walked through the basic functionalities of Jenkins, but only scra
     - Using Folders to restrict access and create security realms
 
 4. Pipelines
-    - Adding post-stage and post-pipeline behavior with `post` blocks. ()
     - Creating pipeline gates, which is asking for user input
     - Job promotion for long-running pipelines
     - Multibranch repository automation
     - Using the 'Pipeline Syntax' tab in a Pipeline home page
-    - Using global variables available in Pipelines (https://opensource.triology.de/jenkins/pipeline-syntax/globals)
 
 5. Automating software and tool installation on agents
     - Running commands and installing in Pipelines
