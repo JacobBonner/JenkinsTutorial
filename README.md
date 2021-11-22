@@ -575,12 +575,12 @@ It is possible to configure Freestyle Jobs, Pipeline Jobs, and Multiconfigration
     - Go back to the 'Status' page of the Pipeline `github-webhook`. You should see a new build appear under 'Build History'.
     - Click on the new build that has appeared and go to 'Console Output'. You should see the checkout process, which contains your new commit message, and then the remaining stages of the Pipeline executing.
 
-5 Now return to the Jenkins Dashboard. You should see the new Pipeline `github-webhook` listed under 'All' with the other five projects.
+5. Now return to the Jenkins Dashboard. You should see the new Pipeline `github-webhook` listed under 'All' with the other five projects.
 ___
 
 ## Part 6 - Agents and Distributing Builds
 
-Within a Jenkins environment, we often start out with a single machine - the controller. However, as the end user load grows, and as the number of developers, testing, and processing necessities increase, it is helpful to have multiple machines that can be used to distribute the load and execute processes faster. We can accomplish this by adding additional agents within our Jenkins environment.
+Within a Jenkins environment, you often start out with a single machine. However, as the end user load grows, and as the number of developers, testing, and processing necessities increase, it is helpful to have multiple machines that can be used to distribute the load and execute processes faster. This can be accomplished by adding additional agents within our Jenkins environment.
 
 ### 6.1 - Adding an SSH Build Agent
 
@@ -598,8 +598,8 @@ Within a Jenkins environment, we often start out with a single machine - the con
 2. On the left side of the screen, click 'New Node'. Give the node the name 'worker', and check the box (circle) 'Permanent Agent'. Then press 'OK'.
 3. Now you should see a list of various fields that can be configured for the new node. If you want to read more about what each field is, click the blue question mark next to the field name on the right side of the screen. 
 4. The 'Number of Executors' is the maximum number of concurrent builds that Jenkins may perform on this node. Leave this field as 1.
-5. The 'Remote root directory' is a directory on the agent that is dedicated to Jenkins. In this field, enter the value '/home/vagrant'.
-6. Change the 'Launch method' to 'Launch agents via SSH'. Under this field we have ...
+5. The 'Remote root directory' is a directory on the agent that is dedicated to Jenkins. In this field, enter the value `/home/vagrant`.
+6. Change the 'Launch method' to 'Launch agents via SSH'. Under this field, enter the following:
     - __Host__, which needs to be the private ip address of the jenkins_worker virtual machine. If you changed the values of the ip addresses on lines 8 and 9 of `/vagrant/Vagrantfile`, enter the value for `IP_ADDRESS_WORKER`, otherwise enter '192.168.33.11'.
     - __Credentials__, which we need to add a new credential for. Press the button 'Add' and click the dropdown 'Jenkins'. In the popup window:
         - Change 'Kind' to 'SSH Username with private key'.
@@ -609,22 +609,22 @@ Within a Jenkins environment, we often start out with a single machine - the con
         - Then hit 'Add'.
     - Now select the 'Credentials' dropdown menu and select the new credential you just created.
     - __Host Key Verification Strategy__, which in this case we can set to 'Non verifying Verification Strategy'.
-    - Finally, hit 'Save'. The agent should be launching and successfully connecting soon.
-7. Now you should see a list of the Nodes for the system, which includes 'master' and 'worker' (the one we just created). Under the 'Name' column in the table, click on the link 'worker'.
-8. On the left side of the screen there is a list of various options. Click on the 'Log' button, which will show us the log and launch status of the agent. The bottom should say (or soon say) 'Agent successfully connected and online'.
-9. We now have a jenkins worker agent that we can build projects on and distribute work to.
+7. Finally, hit 'Save'. The agent should be launching and successfully connecting soon.
+8. Now you should see a list of the Nodes for the system, which includes 'master' and 'worker' (the one we just created). Under the 'Name' column in the table, click on the link 'worker'.
+9. On the left side of the screen there is a list of various options. Click on the 'Log' button, which will show us the log and launch status of the agent. The bottom should say (or soon say) 'Agent successfully connected and online'.
+10. We now have a jenkins worker agent that we can build projects on and distribute work to.
 
 
 ### 6.2 - Using Docker Images for Agents
 
 #### __6.2.1 - Configure Jenkins for Docker__
 1. The first step in using Docker images for agents is to configure the target system's Docker for web/REST access. In this case the target system is the vm jenkins_worker, which was configured in this way automatically on lines 27-31 in the script `vagrant/provision/worker.sh`.
-2. Next we need to add the 'Docker' and 'Docker Pipeline' plugins to Jenkins. From the Jenkins Dashboard, click 'Manage Jenkins' on the left part of the screen, then under the 'System Configuration' section click 'Manage Plugins'. On the next screen there should be four buttons under a search bar: 'Updates', 'Available', 'Installed', 'Advanced'. To find and install the Docker plugin:
+2. Next you need to add the 'Docker' and 'Docker Pipeline' plugins to Jenkins. From the Jenkins Dashboard, click 'Manage Jenkins' on the left part of the screen, then under the 'System Configuration' section click 'Manage Plugins'. On the next screen there should be four buttons under a search bar: 'Updates', 'Available', 'Installed', 'Advanced'. To find and install the Docker plugins:
     - Click on the 'Available' section and enter 'docker' in the search bar.
     - Select the box next to the plugin 'Docker' and also the box 'Docker Pipeline'.
     - At the bottom of the page, press 'Install without Restart'.
     - On the next page, wait until all parts have successfully installed, and then return to the Jenkins Dashboard.
-3. Now we need to configure the Docker plugin. 
+3. Now you need to configure the Docker plugin. 
     - From the Dashboard go to 'Manage Jenkins', then 'Configure System'. 
     - Scroll down to the 'Cloud' section and hit the link to take you to the cloud configuration page.
     - Click 'Add a new cloud' and select 'Docker'.
@@ -635,11 +635,12 @@ Within a Jenkins environment, we often start out with a single machine - the con
 
 #### __6.2.2 - Create Pipeline with Docker Agent__
 
-Now that we have an environment capabale of launching a Docker resource, we can create a new Pipeline that will use Docker as an agent.
+Now that you have an environment capabale of launching a Docker resource, you can create a new Pipeline that will use Docker as an agent.
 1. From the Dashboard, create a new item, call it `using-docker-agent`, and make it a Pipeline. 
-2. On the pipeline's configuration page, go down to the 'Pipeline' section, and copy and paste the contents of ___ into the script block. This Pipeline simply launches in a python Docker container and runs a simple shell script to show the version of python.
+2. On the pipeline's configuration page, go down to the 'Pipeline' section, and copy and paste the contents of `JenkinsTutorial\pipelines\Pipeline_Part6_docker-agent.Jenkinsfile` into the script block. This Pipeline simply launches in a python Docker container and runs a simple shell script to show the version of python.
 3. Hit 'Save' and then hit 'Build Now'.
 4. Once the build show's up under the 'Build History', click on it and go to the 'Console Output'. You should see the container being launched and then the shell command output that prints the python version.
+5. Now return to the Jenkins Dashboard. You should see the new Pipeline `using-docker-agent` listed under 'All' with the other six projects.
 
 ### 6.3 - Further Node Configuration
 As your Jenkins environment grows and the number of potential agents increases, you may want to start targeting builds to toward specific nodes. For example, perhaps you have a machine that can only run docker instances, or a machine that can only run certain applications that require specific resources, like GPU or CPU. It is important to have the ability to select where these processes run, which can be done through labels. Recall that a label is a user-defined text for grouping Agents, typically by similar functionality or capability.
@@ -648,8 +649,9 @@ As your Jenkins environment grows and the number of potential agents increases, 
 2. In this case we will give a label to the node 'worker', so click on that node. Then hit 'Configure' in the menu.
 3. Scroll down to 'Labels' and enter the label `docker`, to signify that this node can run Docker. Then hit 'Save'.
 4. Now that we have the worker node labeled, we need to specify a label in the `agent` block of a Pipeline. From the Dashboard hit 'New Item'. Give it the name `using-agent-labels` and select 'Pipeline'.
-5. On the configuration page, go down to the 'Pipeline' section and copy the contents of the file ___ into the 'Pipeline script'. If you look at the `agent` block of the code you can see we are specifying the label `docker`. Then hit 'Save'.
+5. On the configuration page, go down to the 'Pipeline' section and copy the contents of the file `JenkinsTutorial\pipelines\Pipeline_Part6_use-agent-labels.Jenkinsfile` into the 'Pipeline script'. If you look at the `agent` block of the code you can see we are specifying the label `docker`. Then hit 'Save'.
 6. On the Pipeline's 'Status' page hit 'Build Now', and then when the build appears under 'Build History' click on it and go to 'Console Output'. You should see a line 'Running on `worker` ...' because of the label we applied, and then a simple stage that gets the version of Docker installed on the Node.
+7. Now return to the Jenkins Dashboard. You should see the new Pipeline `using-agent-labels` listed under 'All' with the other seven projects.
 
 Given that we only have the Controller and one additional Node (worker), the use of labels is not very noticeable. However, if we had many more nodes, then using labels would be a useful way to connect a specific Project or Pipeline with a specific set of target machines that can run the agent that supports our environment.
 
@@ -659,7 +661,7 @@ ___
 
 ## Part 7 - Testing and Post-Execution Behaviors
 ### 7.1 - Post-Execution Behaviors
-In Jenkins Pipelines we may want to define additional steps following the completion of specific stages or the pipeline as a whole. For example, we may want to send a slack message or an email at the end of a pipeline if a build fails. The way we can do this in Jenkins Pipeline is with a `post` section, which -- depending on the location of the `post` section within the Pipeline -- defines one or more additional steps that are run upon the completion of a Pipeline or stage. 
+In Jenkins Pipelines you may want to define additional steps following the completion of specific stages or the pipeline as a whole. For example, you may want to send a slack message or an email at the end of a pipeline if a build fails. The way you can do this in Jenkins Pipeline is with a `post` section, which -- depending on the location of the `post` section within the Pipeline -- defines one or more additional steps that are run upon the completion of a Pipeline or stage. 
 
 The `post` block supports a number of different condition blocks, allowing the execution of steps inside each condition depending on the build status of the Pipeline or stage. The supported condition blocks are shown below, appearing in the order that they would be executed if written:
 1. `always`
@@ -689,8 +691,8 @@ You can find more detail here: https://www.jenkins.io/doc/book/pipeline/syntax/#
 
 Now that you have an idea of the post-condition sections of a Jenkins Pipeline, it's time to create a Pipeline that utilizes them.
 1. From the Jenkins Dashboard, click 'New Item', name it `testing-and-post-behavior`, and select 'Pipeline'
-2. Under the 'Pipeline' section of the configuration page, copy and paste the contents of the file ___ into the 'Pipeline script'.
-    - Note that all of the possible `post` sections are included, so you can experiment with the Pipeline and force different post-condition blocks. Further note that they are in reverse order of what I presented earlier, and this is to show that no matter where each section is listed in the `post` block, the order of execution will always be consistent with Jenkins' rules.
+2. Under the 'Pipeline' section of the configuration page, copy and paste the contents of the file `JenkinsTutorial\pipelines\Pipeline_Part7_testing-and-post_v1.Jenkinsfile` into the 'Pipeline script'.
+    - Note that all of the possible `post` sections are included, so you can experiment with the Pipeline and force different post-condition blocks. Further note that they are in reverse order of what was presented earlier, and this is to show that no matter where each section is listed in the `post` block, the order of execution will always be consistent with Jenkins' rules.
 3. Now hit 'Save' and then 'Build Now'. After the build appears under 'Build History', click on it and go to the 'Console Output'. 
     - Throughout the log you should see the output 'Build Complete!', 'All Tests Passed!', and 'Deployment Finished', from the Build, Test, and Deploy post-stage blocks, respectively. 
     - Additionally, you will see the following four lines within the pipeline `post` section, which are from the `always`, `changed`, `success`, and `cleanup` sections, in order:
@@ -703,17 +705,19 @@ Now that you have an idea of the post-condition sections of a Jenkins Pipeline, 
         
         This is always the last section to run, regardless of build status!
         ```
+4.  Now return to the Jenkins Dashboard. You should see the new Pipeline `testing-and-post-behavior` listed under 'All' with the other eight projects.
+
 
 ### 7.2 - Testing
 
-As part of a multi-stage Pipeline process, we might perform tasks like building, testing, and deploying. In this case particularly, if any of the sections fail then we do not want to proceed with future components of the Pipeline. The idea here is that we can build applications and stop the deployment process at any time if something goes wrong. 
+As part of a multi-stage Pipeline process, you might perform tasks like building, testing, and deploying. In this case particularly, if any of the sections fail then you do not want to proceed with future components of the Pipeline. The idea here is that you can build applications and stop the deployment process at any time if something goes wrong. 
 
-We will now create a pipeline to explore on a very simple scale, the idea of building, testing, and deploying in a Pipeline, and what happens when any step of the process fails. Additionally, this section highlights more of the possible sections within `post` blocks.
+You will now create a pipeline to explore on a very simple scale, the idea of building, testing, and deploying in a Pipeline, and what happens when any step of the process fails. Additionally, this section highlights more of the possible sections within `post` blocks.
 
 
 1. From the Jenkins Dashboard, click on the Pipeline `testing-and-post-behavior`, and then hit 'Configure'.
 
-2. In the 'Pipeline' section, replace the 'Pipeline script' with the contents of the file ___. This is identical to the previous code for the pipeline, except there are some simple build and test steps. Then hit 'Save'.
+2. In the 'Pipeline' section, replace the 'Pipeline script' with the contents of the file `JenkinsTutorial\pipelines\Pipeline_Part7_testing-and-post_v2.Jenkinsfile`. This is identical to the previous code for the pipeline, except there are some simple build and test steps. Then hit 'Save'.
 
 3. Press 'Build Now' and then go to the 'Console Output' of the build when it comes up.
     - Again, throughout the log you should see the output 'Build Complete!', 'All Tests Passed!', and 'Deployment Finished', from the Build, Test, and Deploy post-stage blocks, respectively. 
@@ -727,7 +731,7 @@ We will now create a pipeline to explore on a very simple scale, the idea of bui
         ```
         - Note that the output from the `changed` section did not show up because the build status was SUCCESS on the previous build as well.
 
-4. Now go back to the Pipeline's 'Status' page, and then hit 'Configure'. Once again replace the 'Pipeline script' section, this time with the contents of the file ___. This is identical to the previous code for the pipeline, except this code intentionally fails in the 'Test' stage. Then hit 'Save'.
+4. Now go back to the Pipeline's 'Status' page, and then hit 'Configure'. Once again replace the 'Pipeline script' section, this time with the contents of the file `JenkinsTutorial\pipelines\Pipeline_Part7_testing-and-post_v3.Jenkinsfile`. This is identical to the previous code for the pipeline, except this code intentionally fails in the 'Test' stage. Then hit 'Save'.
 
 5. Press 'Build Now' and then go to the 'Console Output' of the build when it comes up.
     - Throughout the log you should see the output 'Build Complete!'. However, this time the pipeline failed in the 'Test' stage and exited, resulting in a skip of the 'Deploy' stage and a FAILED status for the build.
@@ -747,7 +751,7 @@ We will now create a pipeline to explore on a very simple scale, the idea of bui
         ```
         - Note that the output from the `changed` section shows up again, because the previous build was successful while this one failed.
 
-6. Once again, go back to the Pipeline's 'Status' page, and then hit 'Configure'. Replace the 'Pipeline script' section, this time with the contents of the file ___. This is identical to the previous code for the pipeline, except this code fixes the failed test. Then hit 'Save'.
+6. Once again, go back to the Pipeline's 'Status' page, and then hit 'Configure'. Replace the 'Pipeline script' section, this time with the contents of the file `JenkinsTutorial\pipelines\Pipeline_Part7_testing-and-post_v4.Jenkinsfile`. This is identical to the previous code for the pipeline, except this code fixes the failed test. Then hit 'Save'.
 
 7. Press 'Build Now' and then go to the 'Console Output' of the build when it comes up.
     - Again, throughout the log you should see the output 'Build Complete!', 'All Tests Passed!', and 'Deployment Finished', from the Build, Test, and Deploy post-stage blocks, respectively. 
@@ -771,9 +775,9 @@ The different versions of the pipeline used throughout this section are obviousl
 ___
 
 ## Part 8 - REST API
-While most interactions with Jenkins are done through the UI or through SCM, there are times when we may want to interact with Jenkins outside of a plugin enabled resource. An example of this is using the Jenkins REST API, through which you can retrieve information on jobs, pipelines, builds, the build queue, and more, as well as trigger builds remotely. Below are steps you must take before you can trigger builds or retrieve information from your Jenkins server with the REST API:
+While most interactions with Jenkins are done through the UI or through SCM, there are times when you may want to interact with Jenkins outside of a plugin enabled resource. An example of this is using the Jenkins REST API, through which you can retrieve information on jobs, pipelines, builds, the build queue, and more, as well as trigger builds remotely. Below are steps you must take before you can trigger builds or retrieve information from your Jenkins server with the REST API:
 
-1. Before we can send requests via the Jenkins API, we need to aqcuire a token from the Jenkins UI.
+1. Before you can send requests via the Jenkins API, you need to acquire a token from the Jenkins UI.
     - From the Dashboard, click on your name in the top right corner, and then click on 'Configure'. 
     - Under the section 'API Token', press 'Add new Token', give it a name, and then hit 'Generate'.
     - Make sure to copy this token because it can't be recovered in the future! You can also revoke the token and create a new one if you need to.
@@ -795,7 +799,7 @@ To find more details on the API for various pages in Jenkins, there is a link in
 In general, when retrieving information using the REST API, the URL format is `{YOUR_JENKINS_URL}/{RESOURCE_TYPE}/{RESOURCE_NAME}/api`, and if you want the data to be json it would be `{YOUR_JENKINS_URL}/{RESOURCE_TYPE}/{RESOURCE_NAME}/api/json`
 
 #### __Appending Arguments onto URLs__
-When you decide to add arguments onto the url for your request, you can do so by adding `?` at the end, and then add `&` between each argument that you use. Here are some examples of the arguments you can add:
+When you decide to add arguments onto the url for your request, you can do so by adding `?` at the end, and then adding `&` between each argument that you use. Here are some examples of the arguments you can add:
 1. `pretty=true`
     - Returns the data in a readable, nicely formatted manner
 2. `tree=property1,property2,property3,...`
@@ -810,17 +814,17 @@ As an example, if you wanted to retrieve json that is formatted for readability,
 `
 
 ### 8.3 - Triggering a build via the REST API
-Now we are going to trigger a build of the freestyle Project/Job `hello-world`.
+Now you are going to trigger a build of the Pipeline `hello-world-pipeline`.
 1. From your command line, run the command
 
     `
-    curl -u {USER_NAME}:{API_TOKEN} {JENKINS_URL}/job/hello-world/build --data-urlencode json=''
+    curl -u {USER_NAME}:{API_TOKEN} {JENKINS_URL}/job/hello-world-pipeline/build --data-urlencode json=''
     `
 
-2. Now from the Jenkins Dashboard go to the freestyle Project `hello-world`. If not already, you should soon see a new build in progress or finished.
+2. Now from the Jenkins Dashboard go to the Pipeline `hello-world-pipeline`. If not already, you should soon see a new build (#2) in progress or finished.
 
 ### 8.4 - Retrieving Various Information via the REST API
-As mentioned before, you can retrieve various information from Jenkins using the REST API. Below is a list of some of the data you can request, along with the generalized URL you would use.
+As mentioned before, you can retrieve various information from Jenkins using the REST API. Below is a list of some of the data you can request, along with the generalized URL you would use. Note that each of these urls use `pretty=true` because it is always easier to read the output.
 1. Job Information
 
     `
@@ -843,7 +847,9 @@ As mentioned before, you can retrieve various information from Jenkins using the
     curl -u {USER_NAME}:{API_TOKEN} {YOUR_JENKINS_URL}/computer/api/json?pretty=true
     `
 
-For example, run the command `curl -u {USER_NAME}:{API_TOKEN} {YOUR_JENKINS_URL}/computer/api/json?pretty=true`
+For example, run the command `curl -u {USER_NAME}:{API_TOKEN} {YOUR_JENKINS_URL}/job/testing-and-post-behavior/api/json?pretty=true`
+
+In the json that is returned you will see information like the project's description and display name, the url of the project, the next build number, and information about every build for the project. Additionally there is information on the first build, last completed build, the last failed build, the last stable build, the last successful build, and the last unstable build.
 
 ## Part 9 - Further Topics and Next Steps
 
@@ -873,7 +879,7 @@ This tutorial walked through the basic functionalities of Jenkins, but only scra
 8. Global Libraries for pipelines
 
 9. Finding and using more Plugins
-    - Jenkins has hundreds of community developed plugins that can extend its features and functionality, providing limitless possibilities. By adding plugins, you aqcuire many more configuration options for jobs, from new parameters, to build steps, and more. Below are some ways that plugins can be used:
+    - Jenkins has hundreds of community developed plugins that can extend its features and functionality, providing limitless possibilities. By adding plugins, you acquire many more configuration options for jobs, from new parameters, to build steps, and more. Below are some ways that plugins can be used:
         - Integrating with Slack and Email to send notifications, updates, status, etc.
         - Scaling Builds with Other Cloud Services
         - And many more!
@@ -884,3 +890,5 @@ ___
 
 ## Sources
 All of this information can be found among the resources and pages at https://www.jenkins.io.
+
+For information on sources used for this tutorial, see the last slide in the presentation located at `JenkinsTutorial/jenkins_tutorial_presentation`
