@@ -102,7 +102,7 @@ ___
 
 
 ## Part 4 - Projects and Pipelines
-In order to start using the Jenkins environment in our CI toochain, we first need to start by creating a job (project) definition. Recall that a job is a user-configured description of work which Jenkins should perform.
+In order to start using the Jenkins environment in our CI toochain, you first need to start by creating a job (project) definition. Recall that a job is a user-configured description of work which Jenkins should perform.
 
 ### 4.1 Types of Items
 
