@@ -92,7 +92,7 @@ ___
     - __New Item__: Starts the process of creating a new Item, such as a project/job.
     - __People__: Lists all known users that are defined on the system.
     - __Build History__: A list of the builds that have completed, along with a timeline showing when those builds ran.
-    - __Mange Jenkins__: Opens another menu with options for configuring Jenkins. There are many options here, so some of them are highlighted below:
+    - __Manage Jenkins__: Opens another menu with options for configuring Jenkins. There are many options here, so some of them are highlighted below:
         - __System Configuration__: Using the choices under this section, you can: define global settings and paths; configure various tools; add, remove, update, disable or enable plugins; add, remove, control, and monitor nodes and cloud configuration.
         - __Security__: Here you can define who is allowed to access and use the system, define values used for authenticating the services outside of Jenkins with usernames, passwords, private keys and certificates, and you can create, delete or modify users that can log into this Jenkins.  
 3. Below all of these menu items is the __Build Queue__, which is a list of what builds are waiting to be run. Beneath the build queue is the __Build Executor Status__, which shows what builds are running at the present moment. 
@@ -570,6 +570,8 @@ ___
 
 ## Part 6 - Agents and Distributing Builds
 
+Within a Jenkins environment, we often start out with a single machine - the controller. However, as the end user load grows, and as the number of developers, testing, and processing necessities increase, it is helpful to have multiple machines that can be used to distribute the load and execute processes faster. We can accomplish this by adding additional agents within our Jenkins environment.
+
 ### 6.1 - Adding an SSH Build Agent
 
 #### __Retrieve Private SSH Key from Worker__
@@ -759,7 +761,7 @@ The different versions of the pipeline used throughout this section are obviousl
 ___
 
 ## Part 8 - REST API
-While most interactions with Jenkins are done through the UI or through SCM, there are times when we may want to interact with Jenkins outside of a plugin enabled resource. An example of this is using the Jenkins REST API, through which you can retreive information on jobs, pipelines, builds, the build queue, and more, as well as trigger builds remotely. Below are steps you must take before you can trigger builds or retrieve information from your Jenkins server with the REST API:
+While most interactions with Jenkins are done through the UI or through SCM, there are times when we may want to interact with Jenkins outside of a plugin enabled resource. An example of this is using the Jenkins REST API, through which you can retrieve information on jobs, pipelines, builds, the build queue, and more, as well as trigger builds remotely. Below are steps you must take before you can trigger builds or retrieve information from your Jenkins server with the REST API:
 
 1. Before we can send requests via the Jenkins API, we need to aqcuire a token from the Jenkins UI.
     - From the Dashboard, click on your name in the top right corner, and then click on 'Configure'. 
