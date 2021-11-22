@@ -227,7 +227,7 @@ To read more on Pipeline syntax as a whole, check out this link: https://www.jen
 
 
 #### __4.3.4 - Pipeline Job configuration__
-Now we will create a Jenkins Pipeline. From the Dashboard, create a new item, give it the name `hello-world-pipeline`, and select 'Pipeline'. Just like for the Freestyle Job, you will be brought to a configuration page, with a bar of tabs at the top representing the configuration sections. Some of the options in the sections are the same as Freestyle jobs, so only the new options are described below.
+Now you will create a Jenkins Pipeline. From the Dashboard, create a new item, give it the name `hello-world-pipeline`, and select 'Pipeline'. Just like for the Freestyle Job, you will be brought to a configuration page, with a bar of tabs at the top representing the configuration sections. Some of the options in the sections are the same as Freestyle jobs, so only the new options are described below.
 
 1. __General__
     - __Do not allow the pipeline to resume if the controller restarts__: This option prevents a build of this pipeline from resuming if the controller restarts.
@@ -340,7 +340,7 @@ Let's recap Projects and Pipelines, and their various components:
     - Can run scripts and access files stored in the workspace 
 
 #### __4.6.2 - Creating a More Advanced Pipeline__
-Now we will create a Pipeline that brings together all of the components from the previous sections.
+Now you will create a Pipeline that brings together all of the components from the previous sections.
 1. From the Dashboard, hit 'New Item', name it `bring-it-together`, and make it a 'Pipeline'.
 2. Now go down to the 'Pipeline' section of the configuration page. Copy and paste the pipeline from the file `JenkinsTutorial\pipelines\Pipeline_Part4_bring-it-together.Jenkinsfile` into the script block on the configuration page.
 3. Below is a description of each part of this pipeline:
@@ -370,7 +370,7 @@ Now we will create a Pipeline that brings together all of the components from th
 
 8. Now return to the Jenkins Dashboard. You should see the new Pipeline `bring-it-together` listed under 'All' with the other two projects.
 
-With a foundation in Project and Pipelines, in the next part of this tutorial we will go into more detail on Builds.
+With a foundation in Project and Pipelines, in the next part of this tutorial you will go into more detail on Builds.
 ___
 
 
@@ -378,7 +378,7 @@ ___
 
 ### 5.1 - Tracking/Monitoring Build State
 
-Within Jenkins, many projects don't happen instantaneously, and it is often useful to have the ability to go into the system and monitor the current status of a build environment. As an example, we are going to create a simple pipeline prject that runs for a few minutes so we can go in and monitor the build.
+Within Jenkins, many projects don't happen instantaneously, and it is often useful to have the ability to go into the system and monitor the current status of a build environment. As an example, you are going to create a simple pipeline project that runs for a few minutes, so you can go in and monitor the build.
 
 1. From the Jenkins Dashboard, hit 'New Item', give it the name `monitoring-build-state`, and select Pipeline.
 
@@ -407,7 +407,7 @@ These are all just some of the ways of monitoring the status of a build, and see
 
 
 ### 5.2 - Polling SCM for Build Triggering
-An important part of any continuous integration or continuous deployment process is communicating with a Source Code Management system, like Github. In order to do so, we need a repository that already has a Jenkinsfile, which is where the pipeline is defined. The repository we will use is the fork that you made of this Github repository for this project: https://github.com/{YOUR_USERNAME}/JenkinsTutorial.
+An important part of any continuous integration or continuous deployment process is communicating with a Source Code Management system, like Github. In order to do so, you need a repository that already has a Jenkinsfile, which is where the pipeline is defined. The repository you will use is the fork that you made of this Github repository for this project: https://github.com/{YOUR_USERNAME}/JenkinsTutorial.
 
 1. From the Jenkins Dashboard, click 'New Item'. Give it the name `poll-scm` and select the type 'Pipeline'.
 
@@ -447,7 +447,7 @@ To take a look at some artifacts, go to the Pipeline `monitoring-build-state`. Y
 
 ### 5.4 - Triggering Builds with Github Webhooks
 
-For the most part, the goal is to integrate and use Jenkins with a SCM system, so that changes in an environment, like GitHub, are automatically pushed back into the Jenkins environment. We can do this through Webhooks.
+For the most part, the goal is to integrate and use Jenkins with a SCM system, so that changes in an environment, like GitHub, are automatically pushed back into the Jenkins environment. This can be done through Webhooks.
 
 NOTE: For this section you will need to sign up for [ngrok](https://ngrok.com/). There is a free and paid version, but for the purposes of this tutorial you will only need the FREE version. If you don't wish to signup for and configure ngrok on your Jenkins server, then skip this section and continue to Part 6.
 
@@ -633,7 +633,7 @@ Within a Jenkins environment, you often start out with a single machine. However
     - Now hit 'Test Connection', which should give a version back.
     - Check the box 'Enabled', and then hit 'Save' at the bottom of the screen.
 
-#### __6.2.2 - Create Pipeline with Docker Agent__
+#### __6.2.2 - Create a Pipeline with a Docker Agent__
 
 Now that you have an environment capabale of launching a Docker resource, you can create a new Pipeline that will use Docker as an agent.
 1. From the Dashboard, create a new item, call it `using-docker-agent`, and make it a Pipeline. 
