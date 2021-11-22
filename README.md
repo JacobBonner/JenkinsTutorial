@@ -241,7 +241,7 @@ Now we will create a Jenkins Pipeline. From the Dashboard, create a new item, gi
     - This section is where the Pipeline will be defined as code. Recall that it can either be created in the embedded code box that is shown, or you can configure the pipeline to pull code from a Jenkinsfile in a SCM repository.
 
 #### __4.3.5 - Adding Pipeline Code and Building the Pipeline__
-1. When you are done looking through the configuration options, go to the 'Pipeline' section, and copy and paste the contents of the file ___ into the 'Script' box.
+1. When you are done looking through the configuration options, go to the 'Pipeline' section, and copy and paste the contents of the file `JenkinsTutorial\pipelines\Pipeline_Part4_hello-world.Jenkinsfile` into the 'Script' box.
 
 2. Like Freestyle Jobs, the 'Save' and 'Apply' buttons are locked at the bottom of the screen. Hit the 'Save' button.
 
@@ -282,6 +282,7 @@ Now we will create a Jenkins Pipeline. From the Dashboard, create a new item, gi
 5. Now back on the job's status page, because the purpose of the job has changed, hit the 'Rename' button at the bottom of the left hand side menu. Enter the new name `give-greeting` and hit 'Rename'. You should see the new name appear in the Project's home page.
 6. Now click 'Build with Parameters'. Select the greeting you want to give and who the greeting should be directed towards. Then hit 'Build'.
 7. Under the 'Build History', click on '#2', then 'Console Output'. You should now see the invocation and result of the command `echo "${greeting}, ${receiver}!"` with the parameters that you passed.
+8. Now go back to the Jenkins Dashboard. You should see the that `hello-world` has been renamed `give-greeting`.
 
 #### __4.4.2 - Global Pipeline Variables__
 
@@ -290,7 +291,8 @@ Global Pipeline variables are variables that are available directly in pipelines
 The different types of Global Variables are
 1. `env`
     - Offers access to a set of environment variables
-    - You can define your own environment variables both globally across Jenkins and on a per job basis. There is also a set of environment variables that are set automatically in each environment, which can be found at `${YOUR_JENKINS_HOST}/env-vars.html` on your Jenkins master server. Since your instance of Jenkins is running on a local VM and was configured for port 8080, this will be http://localhost:8080/env-vars.html/.
+    - You can define your own environment variables both globally across Jenkins and on a per job basis. 
+    - There is a set of environment variables that are set automatically in each environment, which can be found at `${YOUR_JENKINS_HOST}/env-vars.html` on your Jenkins master server. Since your instance of Jenkins is running on a local VM and was configured for port 8080, this will be http://localhost:8080/env-vars.html/.
 2. `params`
     - Exposes all parameters defined in the build as a read-only map.
 3. `currentBuild`
@@ -340,7 +342,7 @@ Let's recap Projects and Pipelines, and their various components:
 #### __4.6.2 - Creating a More Advanced Pipeline__
 Now we will create a Pipeline that brings together all of the components from the previous sections.
 1. From the Dashboard, hit 'New Item', name it `bring-it-together`, and make it a 'Pipeline'.
-2. Now go down to the 'Pipeline' section of the configuration page. Copy and paste the pipeline from the file ___ into the script block on the configuration page.
+2. Now go down to the 'Pipeline' section of the configuration page. Copy and paste the pipeline from the file `JenkinsTutorial\pipelines\Pipeline_Part4_bring-it-together.Jenkinsfile` into the script block on the configuration page.
 3. Below is a description of each part of this pipeline:
     - `parameters` block
         - This is where you can define and configure parameters for the pipeline. The two parameters here are the same two parameters from the Freestyle Job `give-greeting`.
@@ -359,11 +361,14 @@ Now we will create a Pipeline that brings together all of the components from th
 5. In the 'Build History' section, you should see a red 'X' next to build '#1', indicating that it failed. This is because the script that is executed in the 'Deploy' `stage` does not exist in the workspace yet. In order to fix this we need to add the script to the workspace of this Pipeline on the jenkins server.
     - From the directory `JenkinsTutorial/vagrant`, run the command `vagrant ssh jenkins_server`.
     - Now on the Jenkins server, run the command `sudo cp /vagrant/calculate-sum.sh /var/lib/jenkins/workspace/bring-it-together`, to copy the script to the Pipeline's workspace.
-    - Change the file permissions with the command `sudo chmod 777 /var/lib/jenkins/workspace/bring-it-together/calculate-sum.sh`, so that we can execute the script.
+    - Change the file permissions with the command `sudo chmod 777 /var/lib/jenkins/workspace/bring-it-together/calculate-sum.sh`, so that the the script can be executed.
+    - Run the command `exit` to return to your host machine.
 
 6. Now go back to the Jenkins UI and refresh the page. Now you should see 'Build with Parameters' instead of 'Build Now', because Jenkins has read the configuration written in the Pipieline code. Go ahead and hit that button to build, and enter values for the parameters before hitting 'Build' at the bottom of the page. 
 
 7. Now there should be a second build under the 'Build History'. If you click on '#2' and go to the 'Console Log', the script we added to the workspace should now have executed, and the output for each stage will match what was described in step 3 of this section.
+
+8. Now return to the Jenkins Dashboard. You should see the new Pipeline `bring-it-together` listed under 'All' with the other two projects.
 
 With a foundation in Project and Pipelines, in the next part of this tutorial we will go into more detail on Builds.
 ___
@@ -377,16 +382,16 @@ Within Jenkins, many projects don't happen instantaneously, and it is often usef
 
 1. From the Jenkins Dashboard, hit 'New Item', give it the name `monitoring-build-state`, and select Pipeline.
 
-2. Copy the contents of the file `pipelines\Pipeline_Part5_monitoring-and-artifacts.Jenkinsfile` and paste it into the box under 'Pipeline script'. Check the box 'This project is parametrized' in the 'General' section, select 'String' parameter, and enter the default value, name and description according to how the parameter is defined in the Pipeline code. Then hit 'Save' at the bottom of the screen.
+2. Copy the contents of the file `JenkinsTutorial\pipelines\Pipeline_Part5_monitoring-and-artifacts.Jenkinsfile` and paste it into the box under 'Pipeline script'. Check the box 'This project is parametrized' in the 'General' section, select 'String' parameter, and enter the default value, name and description according to how the parameter is defined in the Pipeline code. Then hit 'Save' at the bottom of the screen.
 
 3. Now click 'Build with Parameters' on the left side of your screen. Enter the value 5 for 'secondsToSleep', and hit 'Build'.
 
 4. Right away, under 'Build History', you should see the following:
     - A circle with three blue dots in the center, and a bar moving clockwise around the perimeter of the circle. The three dots indicates that the pipeline has not been built before, and the bar in the perimeter of the circle moving means that the build is in progress.
-    - A number, which is the build number / build ID. It's a unique identifier that Jenkins uses to organize the builds associated with a a Project or Pipeline.
+    - A number, which is the build number / build ID. It's a unique identifier that Jenkins uses to organize the builds associated with a Project or Pipeline.
     - A striped line/pipe, which is a visual indicator on how long the build has been running, and how much longer before completion. Once Jenkins has built a Project or Pipeline several times, this bar gives a better indication on how much longer the job might run. 
 
-5. After the build is finished, the blue circle with three dots will to a circle with a green check mark, letting you know the job finished successfully. Also the progress bar goes away, and is replaced by the time the build started.
+5. After the build is finished, the blue circle with three dots will change to a circle with a green check mark, letting you know the job finished successfully. Also the progress bar goes away, and is replaced by the time the build started.
 
 6. Click 'Build with Parameters' again, and enter 10 for 'secondsToSleep'. There will be a build schedule notification like before, but this time you should see a circle with the green check mark again, rather than the three blue dots. The green check mark means the previous build finished successfully, and the bar moving around the perimeter of the circle means the job is currently in progress. Instead of a striped bar, there is an empty bar that looks to be filling up as the job runs. This is a visual indicator on how long the build has been running and approximately how much is remaining.
 
@@ -396,6 +401,8 @@ Within Jenkins, many projects don't happen instantaneously, and it is often usef
     - Going to 'Pipeline Steps' will show you where the build is at in the pipeline. 
     - Clicking on 'Console Output' will show you real time output of the pipeline's execution.
 
+9. Now return to the Jenkins Dashboard. You should see the new Pipeline `monitoring-build-state` listed under 'All' with the other three projects.
+
 These are all just some of the ways of monitoring the status of a build, and seeing the log output from the different steps within the deployment process.
 
 
@@ -404,7 +411,7 @@ An important part of any continuous integration or continuous deployment process
 
 1. From the Jenkins Dashboard, click 'New Item'. Give it the name `poll-scm` and select the type 'Pipeline'.
 
-2. Rather than using the 'Pipeline script' definition directly in Jenkins, press the 'Definition' dropdown menu and select 'Pipeline script from SCM'. For the new options that appear enter the following:
+2. In the 'Pipeline' configuration section, rather than using the 'Pipeline script' definition directly in Jenkins, press the 'Definition' dropdown menu and select 'Pipeline script from SCM'. For the new options that appear enter the following:
     - __SCM__: Select 'Git' from the dropdown.
         - __Repository URL__: https://github.com/{YOUR_USERNAME}/JenkinsTutorial.git
         - __Credentials__: You shouldn't need to enter any credentials because the repo is public/open. 
@@ -416,15 +423,17 @@ An important part of any continuous integration or continuous deployment process
 
 4. Hit 'Save' to return to the Pipeline's home page. Along with the standard set of options that appear in the menu on the left of the screen, there is a new option 'Polling Log' or 'Git Polling Log', which describes when the specified repository was last polled and the status of that poll.
 
-5. Now we have to wait for the minute to tick over so that the polling occurs. Soon you should see a new build in 'Build History' that was triggered by the polling, and the 'Git Polling Log' should contain some new information.
+5. Now we have to wait for the minute to tick over so that the polling occurs. Soon you should see a new build in 'Build History' that was triggered by the polling, and the 'Git Polling Log' should contain some new information (you may need to refresh the page).
 
-6. From the Pipeline's 'Status' page, you can see that the system has done a checkout of the specified Github repository, so it was able to poll SCM and get the necessary information. Additionally, the pipeline defined in the Jenkins file you specified in configuration should have successfully completed.
+6. From the Pipeline's 'Status' page, you can see that the system has done a checkout of the specified Github repository in the stage `Declarative: Checkout SCM`, so it was able to poll SCM and get the necessary information. Additionally, the pipeline defined in the Jenkins file you specified in configuration should have successfully completed.
 
 7. The way this 'Poll SCM' feature works is by polling the specified repository, and if it finds changes then it will build, otherwise it will do nothing. In particular, go back to the 'Git Polling Log'. You may need to wait for the minute to tick over again before seeing another poll in the log. You should see:
     - For the initial poll, there was no previous build or repository state to compare to, so changes were detected. That is why the new build was triggered.
     - For the second poll, Jenkins examined the repository again, but found that there were no changes since the previous poll. Thus, no build was triggered.
 
 8. In reality you wouldn't want to actually poll every minute, but you can specify a reasonable time that works well with when you make changes to your repository and also when other builds are happening in the rest of your Jenkins environment.
+
+9. Now return to the Jenkins Dashboard. You should see the new Pipeline `poll-scm` listed under 'All' with the other four projects.
 
 
 ### 5.3 - Build Artifacts
@@ -444,7 +453,7 @@ NOTE: For this section you will need to sign up for [ngrok](https://ngrok.com/).
 
 
 #### __5.4.1 - Create a Personal Access Token in Github__
-Before we can communicate with GitHub from Jenkins, we need generate a GitHub Personal Access Token that will be used by Jenkins.
+Before you can communicate with GitHub from Jenkins, you need generate a GitHub Personal Access Token that will be used by Jenkins.
 
 1. To create a Personal Access Token in your Github environment, go to [this link](https://github.com/settings/tokens/new). Also, the steps to get to that link are:
     - Go to [Github](https://github.com)
@@ -460,15 +469,15 @@ Before we can communicate with GitHub from Jenkins, we need generate a GitHub Pe
 3. Be sure to copy the token, as you won't be able to see it again.
 
 #### __5.4.2 - Create Necessary Credentials in Jenkins__
-In order to connect to Github from Jenkins and trigger builds with webhooks, we need to create two credentials in Jenkins.
+In order to connect to Github from Jenkins and trigger builds with webhooks, you need to create two credentials in Jenkins.
 1. From the Jenkins Dashboard hit 'Manage Jenkins', then under the Security section hit 'Manage Credentials'. Under the section 'Stores scoped to Jenkins', there is one option with a Store and Domains. Click on the link `(global)` under Domains. Now on the the left side of the screen there is an option 'Add Credentials'.
-2. The first Credential that we are going to add is your GitHub Personal Access Token so that we can establish a connection to GitHub. Click 'Add Credentials', and enter the following for each field:
+2. The first Credential that you are going to add is your GitHub Personal Access Token so that we can establish a connection to GitHub. Click 'Add Credentials', and enter the following for each field:
     - __Kind__: Select 'Secret text' from the dropdown menu.
     - __Secret__: Enter your Github Personal Access Token.
     - __ID__: `github-personal-access-token`
     - __Description__: `github-personal-access-token`
     - Then hit 'OK'.
-3. The second Credential that we are going to add is your GitHub username in combination with your Personal Access Token (NOT your password). Click 'Add Credentials', and enter the following for each field:
+3. The second Credential that you are going to add is your GitHub username in combination with your Personal Access Token (NOT your password). Click 'Add Credentials', and enter the following for each field:
     - __Kind__: Select 'Username with password' from the dropdown menu.
     - __Username__: Enter your Github username.
     - __Password__: Enter your Github Personal Access Token.
@@ -477,22 +486,22 @@ In order to connect to Github from Jenkins and trigger builds with webhooks, we 
     - Then hit 'OK'.
 
 #### __5.4.3 - Configure GitHub Server in Jenkins__
-In order to use the Jenkins and Github integration for webhooks, we have to create a Github connection within Jenkins. 
+In order to use the Jenkins and Github integration for webhooks, you have to create a Github connection within Jenkins. 
 
 1. From the Jenkins Dashboard, click on the 'Manage Jenkins' option, 'Configure System', and then scroll down the 'Github' section. 
-2. Press 'Add Github Server' to create a basic Github server definition
-3. Give it the name 'Github'. 
+2. Press 'Add Github Server' to create a basic Github server definition.
+3. Give it the name 'GitHub'. 
 4. For Credentials, click on the dropdown menu and select the Credentials `github-personal-access-token`.
 5. Hit 'Test Connection', and you should see a verification message. Now your Github server connection is configured.
 6. Hit 'Save' at the bottom of the page.
 
 
 #### __5.4.4 - Setup and Configure ngrok__
-It is not possible to add a webhook for Jenkins running on `localhost` as it doesn’t have a public URL exposed over the internet. To resolve this issue we are going to use ngrok, because it will expose the local server to the public internet.
+It is not possible to add a webhook for Jenkins running on `localhost` as it doesn’t have a public URL exposed over the internet. To resolve this issue you are going to use ngrok, because it will expose the local server to the public internet.
 
 1. If you don't already have an account for ngrok, then sign up [here](https://dashboard.ngrok.com/signup).
 
-2. After logging in, you should be brought to the [Setup & Installation](https://dashboard.ngrok.com/get-started/setup) page. The first step is to install ngrok, which has already been done in the script __ while provisioning your Jenkins server.
+2. After logging in, you should be brought to the [Setup & Installation](https://dashboard.ngrok.com/get-started/setup) page. The first step is to install ngrok, which has already been done in the script `JenkinsTutorial\vagrant\provision\server.sh` while provisioning your Jenkins server.
 
 3. Next you need to connect your ngrok account to your Jenkins server.
     - From the directory `JenkinsTutorial\vagrant`, run the command `vagrant ssh jenkins_server`.
@@ -512,7 +521,7 @@ It is not possible to add a webhook for Jenkins running on `localhost` as it doe
         Forwarding                    https://82df-8-44-144-253.ngrok.io -> http://localhost:8080
 
         Connections                   ttl     opn     rt1     rt5     p50     p90
-                                    1       0       0.00    0.00    5.85    5.85 
+                                      1       0       0.00    0.00    5.85    5.85 
         ```
     - DO NOT press 'Ctrl + C', because we want to keep this fired up.
     - Note that any time you run this command with the free plan, the forwarding URL will change. Hence, you will need to update your Webhooks whenever you do this.
@@ -530,7 +539,7 @@ Recall the fact that you forked this repository rather than just simply cloning 
     - Then hit 'Add webhook'.
 
 2. To create the Webhook, follow the next stetps:
-    - __Payload URL__: This will be the 'Forwarding' URL that you copied after running `ngrok http 8080`, with `/github-webhook/` appended onto it. It will have the form `https://{YOUR_URL_ID}.ngrok.io/github-webhook/`.
+    - __Payload URL__: This will be the 'Forwarding' URL that you copied after running `ngrok http 8080`, with `/github-webhook/` appended onto it. It will have the form `https://{YOUR_URL_ID}.ngrok.io/github-webhook/`. DO NOT FORGET to add `/github-webhook/`.
     - __Content Type__: Select 'application/json'
     - __Which events would you like to trigger this webhook?__: Select the option 'Send me everything'.
 
@@ -546,11 +555,11 @@ Recall the fact that you forked this repository rather than just simply cloning 
 
 
 #### __5.4.6 - Create a Job in Jenkins and Trigger with a Webhook__
-It is possible to configure Freestyle Jobs, Pipeline Jobs, and Multiconfigration Pipeline Jobs for integration with GitHub webhooks. In this case we are going to create a Pipeline.
+It is possible to configure Freestyle Jobs, Pipeline Jobs, and Multiconfigration Pipeline Jobs for integration with GitHub webhooks. In this case you are going to create a Pipeline.
 
 1. From the Jenkins Dashboard, hit 'New Item', give it the name `github-webhook` and select 'Pipeline'.
 
-2. On the configuration page, under the section 'Builds Triggers' check the box next to 'GitHub hook trigger for GITScm polling'. Then in the 'Pipeline' section, press the 'Definition' dropdown menu and select 'Pipeline script from SCM'. For the new options that appear enter the following:
+2. On the configuration page, under the section 'Builds Triggers' check the box next to `GitHub hook trigger for GITScm polling`. Then in the 'Pipeline' section, press the 'Definition' dropdown menu and select 'Pipeline script from SCM'. For the new options that appear enter the following:
     - __SCM__: Select 'Git' from the dropdown.
         - __Repository URL__: https://github.com/{YOUR_USERNAME}/JenkinsTutorial.git
         - __Credentials__: From the dropdown menu, select the credentials `github-credentials`.
@@ -566,6 +575,7 @@ It is possible to configure Freestyle Jobs, Pipeline Jobs, and Multiconfigration
     - Go back to the 'Status' page of the Pipeline `github-webhook`. You should see a new build appear under 'Build History'.
     - Click on the new build that has appeared and go to 'Console Output'. You should see the checkout process, which contains your new commit message, and then the remaining stages of the Pipeline executing.
 
+5 Now return to the Jenkins Dashboard. You should see the new Pipeline `github-webhook` listed under 'All' with the other five projects.
 ___
 
 ## Part 6 - Agents and Distributing Builds
