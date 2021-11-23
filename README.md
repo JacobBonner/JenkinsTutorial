@@ -310,7 +310,7 @@ The different types of Global Variables are
 #### __4.4.3 - A Job's Workspace__
 Recall that a workspace is a disposable directory on the file system of a Node where work can be done by a Pipeline or Job. Every Job and Pipeline you have defined is given a dedicated workspace, where the job stores any files that are generated during a build or pulled from source control. Throughout the build of a job or pipeline, you can access the workspace, whether it be to run scripts that are stored in the workspace or to create new files.
 
-To access the workspace for a Job, you can either press the 'Workspace' option in the menu on the left side of a job's home page, or from the 'Status' page there is a 'Workspace' option under the project name. If you go the freestyle project `give-greeting`, you will see the 'Workspace', but it will be empty because we have not added any files to it.
+To access the workspace for a Job, you can either press the 'Workspace' option in the menu on the left side of a job's home page, or from the 'Status' page there is a 'Workspace' option under the project name. If you go the freestyle project `give-greeting`, you will see the 'Workspace', but it will be empty because you have not added any files to it.
 
 Since each build of a job uses the same workspace, it can be useful to clean up between runs. At the very top level of the workspace, you'll see a link in the left menu that reads 'Wipe Out Current Workspace'. Clicking this link, and selecting OK to confirm, will remove all files from the workspace. As shown in the configuration section for the jobs and pipelines, you can automatically clean up the workspace before each build, and also clean up the workspace once a build completes.
 
@@ -358,7 +358,7 @@ Now you will create a Pipeline that brings together all of the components from t
 
 4. Now hit 'Save'. Then press 'Build Now' on the Pipeline's home page. You probably noticed that even though there are parameters defined in the Pipeline, you were not prompted to enter any parameters just now. That is because jenkins needs to read the Pipeline code on the first build to get the configuration defined in it, and then it will be added to the configuration in the jenkins UI.
 
-5. In the 'Build History' section, you should see a red 'X' next to build '#1', indicating that it failed. This is because the script that is executed in the 'Deploy' `stage` does not exist in the workspace yet. In order to fix this we need to add the script to the workspace of this Pipeline on the jenkins server.
+5. In the 'Build History' section, you should see a red 'X' next to build '#1', indicating that it failed. This is because the script that is executed in the 'Deploy' `stage` does not exist in the workspace yet. In order to fix this you need to add the script to the workspace of this Pipeline on the jenkins server.
     - From the directory `JenkinsTutorial/vagrant`, run the command `vagrant ssh jenkins_server`.
     - Now on the Jenkins server, run the command `sudo cp /vagrant/calculate-sum.sh /var/lib/jenkins/workspace/bring-it-together`, to copy the script to the Pipeline's workspace.
     - Change the file permissions with the command `sudo chmod 777 /var/lib/jenkins/workspace/bring-it-together/calculate-sum.sh`, so that the the script can be executed.
@@ -366,7 +366,7 @@ Now you will create a Pipeline that brings together all of the components from t
 
 6. Now go back to the Jenkins UI and refresh the page. Now you should see 'Build with Parameters' instead of 'Build Now', because Jenkins has read the configuration written in the Pipieline code. Go ahead and hit that button to build, and enter values for the parameters before hitting 'Build' at the bottom of the page. 
 
-7. Now there should be a second build under the 'Build History'. If you click on '#2' and go to the 'Console Log', the script we added to the workspace should now have executed, and the output for each stage will match what was described in step 3 of this section.
+7. Now there should be a second build under the 'Build History'. If you click on '#2' and go to the 'Console Log', the script you added to the workspace should now have executed, and the output for each stage will match what was described in step 3 of this section.
 
 8. Now return to the Jenkins Dashboard. You should see the new Pipeline `bring-it-together` listed under 'All' with the other two projects.
 
@@ -423,7 +423,7 @@ An important part of any continuous integration or continuous deployment process
 
 4. Hit 'Save' to return to the Pipeline's home page. Along with the standard set of options that appear in the menu on the left of the screen, there is a new option 'Polling Log' or 'Git Polling Log', which describes when the specified repository was last polled and the status of that poll.
 
-5. Now we have to wait for the minute to tick over so that the polling occurs. Soon you should see a new build in 'Build History' that was triggered by the polling, and the 'Git Polling Log' should contain some new information (you may need to refresh the page).
+5. Now you have to wait for the minute to tick over so that the polling occurs. Soon you should see a new build in 'Build History' that was triggered by the polling, and the 'Git Polling Log' should contain some new information (you may need to refresh the page).
 
 6. From the Pipeline's 'Status' page, you can see that the system has done a checkout of the specified Github repository in the stage `Declarative: Checkout SCM`, so it was able to poll SCM and get the necessary information. Additionally, the pipeline defined in the Jenkins file you specified in configuration should have successfully completed.
 
@@ -471,7 +471,7 @@ Before you can communicate with GitHub from Jenkins, you need generate a GitHub 
 #### __5.4.2 - Create Necessary Credentials in Jenkins__
 In order to connect to Github from Jenkins and trigger builds with webhooks, you need to create two credentials in Jenkins.
 1. From the Jenkins Dashboard hit 'Manage Jenkins', then under the Security section hit 'Manage Credentials'. Under the section 'Stores scoped to Jenkins', there is one option with a Store and Domains. Click on the link `(global)` under Domains. Now on the the left side of the screen there is an option 'Add Credentials'.
-2. The first Credential that you are going to add is your GitHub Personal Access Token so that we can establish a connection to GitHub. Click 'Add Credentials', and enter the following for each field:
+2. The first Credential that you are going to add is your GitHub Personal Access Token so that you can establish a connection to GitHub. Click 'Add Credentials', and enter the following for each field:
     - __Kind__: Select 'Secret text' from the dropdown menu.
     - __Secret__: Enter your Github Personal Access Token.
     - __ID__: `github-personal-access-token`
@@ -523,7 +523,7 @@ It is not possible to add a webhook for Jenkins running on `localhost` as it doe
         Connections                   ttl     opn     rt1     rt5     p50     p90
                                       1       0       0.00    0.00    5.85    5.85 
         ```
-    - DO NOT press 'Ctrl + C', because we want to keep this fired up.
+    - DO NOT press 'Ctrl + C', because you want to keep this fired up.
     - Note that any time you run this command with the free plan, the forwarding URL will change. Hence, you will need to update your Webhooks whenever you do this.
     
 5. Copy the https 'Forwarding' URL, which in the example above is `https://82df-8-44-144-253.ngrok.io`
@@ -570,7 +570,7 @@ It is possible to configure Freestyle Jobs, Pipeline Jobs, and Multiconfigration
 3. Now hit 'Save'. Back on the 'Status' page, hit 'Build Now', which will enable jenkins to register the GitHub webhook. This will ensure that from now on, whenever you push new changes to the specified repository it will automatically run this Pipeline in jenkins. 
     - After the first build finishes, you will notice the first stage in the 'Stage View' is `Declarative: Checkout SCM`. This is the process of Jenkins fetching the specified repository, noticing changes, and checking out the specified branch(es).
 
-4. Now that we have the Pipeline `github-webhook` configured to scan the repository, we want to commit a change to the repository so that Jenkins will find it and trigger a new build. 
+4. Now that you have the Pipeline `github-webhook` configured to scan the repository, you want to commit a change to the repository so that Jenkins will find it and trigger a new build. 
     - In your repository `https://github.com/{YOUR_USERNAME}/JenkinsTutorial`, make a change to a file that will not break any functionality (adding or removing whitespace), and then commit the change to the branch `main`.
     - Go back to the 'Status' page of the Pipeline `github-webhook`. You should see a new build appear under 'Build History'.
     - Click on the new build that has appeared and go to 'Console Output'. You should see the checkout process, which contains your new commit message, and then the remaining stages of the Pipeline executing.
@@ -601,18 +601,18 @@ Within a Jenkins environment, you often start out with a single machine. However
 5. The 'Remote root directory' is a directory on the agent that is dedicated to Jenkins. In this field, enter the value `/home/vagrant`.
 6. Change the 'Launch method' to 'Launch agents via SSH'. Under this field, enter the following:
     - __Host__, which needs to be the private ip address of the jenkins_worker virtual machine. If you changed the values of the ip addresses on lines 8 and 9 of `/vagrant/Vagrantfile`, enter the value for `IP_ADDRESS_WORKER`, otherwise enter '192.168.33.11'.
-    - __Credentials__, which we need to add a new credential for. Press the button 'Add' and click the dropdown 'Jenkins'. In the popup window:
+    - __Credentials__, which you need to add a new credential for. Press the button 'Add' and click the dropdown 'Jenkins'. In the popup window:
         - Change 'Kind' to 'SSH Username with private key'.
         - For 'Description' enter 'vagrant ssh key for jenkins worker'.
         - For username, enter 'vagrant'.
         - Under 'Private Key', select 'enter directly', then select 'Add'. In the box, paste the private key that you copied in step 2 of the previous section 'Retrieve Private SSH Key from Worker'.
         - Then hit 'Add'.
     - Now select the 'Credentials' dropdown menu and select the new credential you just created.
-    - __Host Key Verification Strategy__, which in this case we can set to 'Non verifying Verification Strategy'.
+    - __Host Key Verification Strategy__, which in this case you can set to 'Non verifying Verification Strategy'.
 7. Finally, hit 'Save'. The agent should be launching and successfully connecting soon.
-8. Now you should see a list of the Nodes for the system, which includes 'master' and 'worker' (the one we just created). Under the 'Name' column in the table, click on the link 'worker'.
+8. Now you should see a list of the Nodes for the system, which includes 'master' and 'worker' (the one you just created). Under the 'Name' column in the table, click on the link 'worker'.
 9. On the left side of the screen there is a list of various options. Click on the 'Log' button, which will show us the log and launch status of the agent. The bottom should say (or soon say) 'Agent successfully connected and online'.
-10. We now have a jenkins worker agent that we can build projects on and distribute work to.
+10. You now have a jenkins worker agent that you can build projects on and distribute work to.
 
 
 ### 6.2 - Using Docker Images for Agents
@@ -629,7 +629,7 @@ Within a Jenkins environment, you often start out with a single machine. However
     - Scroll down to the 'Cloud' section and hit the link to take you to the cloud configuration page.
     - Click 'Add a new cloud' and select 'Docker'.
     - Press 'Docker Cloud details...'
-    - For 'Docker Host URI', we need to tell it what machine to talk to. For this we need `tcp://`, followed by the ip address of our jenkins worker node. Again, if you changed the values of the ip addresses on lines 8 and 9 of `/vagrant/Vagrantfile`, then use the value for `IP_ADDRESS_WORKER`, otherwise use '192.168.33.11'. Ultimately, the final value we need to enter for the uri is `tcp://192.168.33.11:4243`, where the port is the one that was configured on lines 27-31 of the script `vagrant/provision/worker.sh`
+    - For 'Docker Host URI', you need to tell it what machine to talk to. For this you need `tcp://`, followed by the ip address of our jenkins worker node. Again, if you changed the values of the ip addresses on lines 8 and 9 of `/vagrant/Vagrantfile`, then use the value for `IP_ADDRESS_WORKER`, otherwise use '192.168.33.11'. Ultimately, the final value you need to enter for the uri is `tcp://192.168.33.11:4243`, where the port is the one that was configured on lines 27-31 of the script `vagrant/provision/worker.sh`
     - Now hit 'Test Connection', which should give a version back.
     - Check the box 'Enabled', and then hit 'Save' at the bottom of the screen.
 
@@ -646,14 +646,14 @@ Now that you have an environment capabale of launching a Docker resource, you ca
 As your Jenkins environment grows and the number of potential agents increases, you may want to start targeting builds to toward specific nodes. For example, perhaps you have a machine that can only run docker instances, or a machine that can only run certain applications that require specific resources, like GPU or CPU. It is important to have the ability to select where these processes run, which can be done through labels. Recall that a label is a user-defined text for grouping Agents, typically by similar functionality or capability.
 
 1. To give a Node a label, from the Jenkins Dashboard click 'Manage Jenkins', then under the 'System Configuration' section click 'Manage Nodes and Clouds'.
-2. In this case we will give a label to the node 'worker', so click on that node. Then hit 'Configure' in the menu.
+2. In this case you will give a label to the node 'worker', so click on that node. Then hit 'Configure' in the menu.
 3. Scroll down to 'Labels' and enter the label `docker`, to signify that this node can run Docker. Then hit 'Save'.
-4. Now that we have the worker node labeled, we need to specify a label in the `agent` block of a Pipeline. From the Dashboard hit 'New Item'. Give it the name `using-agent-labels` and select 'Pipeline'.
-5. On the configuration page, go down to the 'Pipeline' section and copy the contents of the file `JenkinsTutorial\pipelines\Pipeline_Part6_use-agent-labels.Jenkinsfile` into the 'Pipeline script'. If you look at the `agent` block of the code you can see we are specifying the label `docker`. Then hit 'Save'.
-6. On the Pipeline's 'Status' page hit 'Build Now', and then when the build appears under 'Build History' click on it and go to 'Console Output'. You should see a line 'Running on `worker` ...' because of the label we applied, and then a simple stage that gets the version of Docker installed on the Node.
+4. Now that you have the worker node labeled, you need to specify a label in the `agent` block of a Pipeline. From the Dashboard hit 'New Item'. Give it the name `using-agent-labels` and select 'Pipeline'.
+5. On the configuration page, go down to the 'Pipeline' section and copy the contents of the file `JenkinsTutorial\pipelines\Pipeline_Part6_use-agent-labels.Jenkinsfile` into the 'Pipeline script'. If you look at the `agent` block of the code you can see you are specifying the label `docker`. Then hit 'Save'.
+6. On the Pipeline's 'Status' page hit 'Build Now', and then when the build appears under 'Build History' click on it and go to 'Console Output'. You should see a line 'Running on `worker` ...' because of the label you applied, and then a simple stage that gets the version of Docker installed on the Node.
 7. Now return to the Jenkins Dashboard. You should see the new Pipeline `using-agent-labels` listed under 'All' with the other seven projects.
 
-Given that we only have the Controller and one additional Node (worker), the use of labels is not very noticeable. However, if we had many more nodes, then using labels would be a useful way to connect a specific Project or Pipeline with a specific set of target machines that can run the agent that supports our environment.
+Given that you only have the Controller and one additional Node (worker), the use of labels is not very noticeable. However, if you had many more nodes, then using labels would be a useful way to connect a specific Project or Pipeline with a specific set of target machines that can run the agent that supports our environment.
 
 
 ___
