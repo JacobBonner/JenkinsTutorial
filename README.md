@@ -891,4 +891,4 @@ ___
 ## Sources
 All of this information can be found among the resources and pages at https://www.jenkins.io.
 
-For information on sources used for this tutorial, see the last slide in the presentation located at `JenkinsTutorial/jenkins_tutorial_presentation`
+For information on sources used for this tutorial, see the last slide in the presentation located at `JenkinsTutorial/presentation`
