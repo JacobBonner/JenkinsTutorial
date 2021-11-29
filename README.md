@@ -9,7 +9,7 @@ Jenkins is an open source framework used to manage all types of automation, from
 1. Open Source / Free
     - As an open source project, there is a community around Jenkins that provides large support and thorough documentation.
     - Anyone can examine the code, find and fix issues, or develop new features.
-    - There are hundredes of plugins available to support building, deploying and automating any project, and it is easy to create your own.
+    - There are hundreds of plugins available to support building, deploying and automating any project, and it is easy to create your own.
 2. Extensibility and Flexibility
     - There are hundreds of community developed plugins, allowing you to integrate with practically every tool in the CI/CD toolchain. By using plugins you can extend the features and functionality of Jenkins, providing limitless possibilities.
     - Jenkins is distributed, giving you the ability to easily distribute work across multiple machines. This allows you to drive builds, tests and deployments faster.
@@ -24,14 +24,14 @@ Jenkins can be easily configured and extended, and comes with a multitude of plu
 
 1. Maintain, orchestrate, and accelerate the entire software development lifecycle.
 2. Integrate with various SCM systems.
-3. Manage and control software delivery processes throughout the entire lifecyle
+3. Manage and control software delivery processes throughout the entire lifecycle
     - Build, Document, Test, Package, Deploy
 4. Generate reports.
-5. Push to various respositories.
+5. Push to various repositories.
 6. Notify stakeholders of build status.
     - Slack, Email, etc
 
-And due to the plethora of avilable plugins in the community, Jenkins can do so much more.
+And due to the plethora of available plugins in the community, Jenkins can do so much more.
 
 ___
 
@@ -102,7 +102,7 @@ ___
 
 
 ## Part 4 - Projects and Pipelines
-In order to start using the Jenkins environment in our CI toochain, you first need to start by creating a job (project) definition. Recall that a job is a user-configured description of work which Jenkins should perform.
+In order to start using the Jenkins environment in our CI toolchain, you first need to start by creating a job (project) definition. Recall that a job is a user-configured description of work which Jenkins should perform.
 
 ### 4.1 Types of Items
 
@@ -131,24 +131,24 @@ After clicking 'New Item' from the Dashboard, enter the item name `hello-world`.
 1. __General__
     - __Description__: Here you can add additional text outside the job name to help describe the job and what it does.
     - __Discard Old Builds__: Jenkins keeps a record of each build and the files that were generated for that build, including artifacts, log files, etc. This parameter allows you to put a limit both on the number of builds that Jenkins will keep for this job and how long (in days) Jenkins will keep a build for.
-    - __Github Project__:  This option helps with associating a Jenkins job to a project being hosted on Github. By selecting this you can enter the url for the repo where the project is hosted, and enter a name to display the link on the home page for the Jenkins job.
+    - __Github Project__:  This option helps with associating a Jenkins job to a project being hosted on Github. By selecting this you can enter the url for the repo where the project is hosted, and enter a name to display the link on the homepage for the Jenkins job.
     - __This project is parametrized__: This is a powerful option that allows you to pass various types of parameters to a job, such as strings, files, booleans, and more. This makes it easy to create a job that can be used differently based on the parameters you pass to it.  
     - __Throttle builds__: This option gives you control over how many times the job can run within a given period of time. If the job is CPU intensive or runs for a long time, this option can be useful if you want to keep a job from allocating too many resources.
     - __Disable this project__: This option is very intuitive in that it disables the job, meaning you won't be able to run it manually or trigger it from another job. 
     - __Execute concurrent builds if necessary__:  By default, Jenkins only runs one instance of a job at any given time. Selecting this option allows Jenkins to build multiple instances of this job simultaneously.
     - The 'Advanced...' button underneath the options just listed reveals even more options ...
-        - __Quiet Period__: This option let's you specify an amount of time between triggering a build and when it actually starts building. Newly triggered builds of this project will be added to the build queue, but will wait the specified down time before actually starting the build.
+        - __Quiet Period__: This option lets you specify an amount of time between triggering a build and when it actually starts building. Newly triggered builds of this project will be added to the build queue, but will wait the specified down time before actually starting the build.
         - __Retry Count__: When this option is activated, and this project is configured to use a SCM system, Jenkins will try the specified amount of times to check out from the SCM system until it succeeds.
         - __Block build when upstream project is building__: When this option is selected, Jenkins will prevent the job from building when a dependency of this project is in the queue, or building.
         - __Block build when downstream project is building__: When this option is selected, Jenkins will prevent the project from building when a child of this project is in the queue, or building.
         - __Use custom workspace__: Rather than using the default workspace as specified on a Node, this option lets you specify the workspace location manually for a job.
-        - __Display Name__: This option allows you to specify an optionla job name shown for the project throughout the Jenkins web GUI.
+        - __Display Name__: This option allows you to specify an optional job name shown for the project throughout the Jenkins web GUI.
 2. __Source Code Management__: This section controls how Jenkins interacts with any code stored in external SCM. For example, the 'Git' option allows you to enter the repository url and any credentials needed to access the repo. You can also specify which branches to check out.
 3. __Build Triggers__: This section has options for specifying how and when a job is built automatically.
     - __Trigger builds remotely__: This option allows you to trigger new builds by accessing a predefined URL with the REST API, which requires an authorization token.
     - __Build after other projects are built__: With this option you can trigger a new build for this job after some other specified project(s) are built.
     - __Build periodically__: With this option you can specify periodic times to build the job, in a CRON-like format.
-    - __Github hook trigger for GITCsm polling__: Activating this option let's you automatically trigger a build when there is a change in a specified Github repository.
+    - __Github hook trigger for GITCsm polling__: Activating this option lets you automatically trigger a build when there is a change in a specified Github repository.
     - __Poll SCM__: This option allows you to specify a CRON-like schedule for which a specified SCM repository will be polled for changes. If a change is found, then the job will build.
 4. __Build Environment__:  This section gives you control over the environment in which the job will run.
     - __Delete workspace before build starts__: When this option is selected, the workspace of the job will be deleted and recreated at the start of each build.
@@ -185,7 +185,7 @@ A Jenkinsfile can be written using two types of syntax - __Declarative__ and __S
 
 #### __4.3.2 - Why Pipeline?__
 Jenkins receives a powerful set of automation tools from Pipeline, supporting tasks spanning from simple CI to complex CD pipelines. By utilizing the various capabilities and functionalities of Pipeline, it provides several features and benefits to users:
-1. __Code__: Pipelines are written as code and generally added to source control, allowing continous and trackable editing, consistent reviewing, iteration, etc.
+1. __Code__: Pipelines are written as code and generally added to source control, allowing continuous and trackable editing, consistent reviewing, iteration, etc.
 2. __Durability__: Pipelines persist both planned and unplanned restarts of the Controller.
 3. __Pausability__: Pipelines have the ability to wait for human input or approval before continuing.
 4. __Versatility__: Pipelines support complex real-world CD requirements.
@@ -236,7 +236,7 @@ Now you will create a Jenkins Pipeline. From the Dashboard, create a new item, g
 2. __Build Triggers__
     - This section contains no new options that are not available in Freestyle Jobs. Check the Freestyle Jobs section of this document for more info.
 3. __Advanced Project Options__
-    - By defult, this section only contains the 'Display Name' option, which was described in the Freestyle Jobs section of this document.
+    - By default, this section only contains the 'Display Name' option, which was described in the Freestyle Jobs section of this document.
 4. __Pipeline__
     - This section is where the Pipeline will be defined as code. Recall that it can either be created in the embedded code box that is shown, or you can configure the pipeline to pull code from a Jenkinsfile in a SCM repository.
 
@@ -245,7 +245,7 @@ Now you will create a Jenkins Pipeline. From the Dashboard, create a new item, g
 
 2. Like Freestyle Jobs, the 'Save' and 'Apply' buttons are locked at the bottom of the screen. Hit the 'Save' button.
 
-3. Once you are back on the job's status page, hit the 'Build Now' button on the left side of the screen. Soon you should see a build appear under the 'Build History' section on the left of the screen. There will be an icon, a build number, and then the date and time at which is was built.
+3. Once you are back on the job's status page, hit the 'Build Now' button on the left side of the screen. Soon you should see a build appear under the 'Build History' section on the left of the screen. There will be an icon, a build number, and then the date and time at which it was built.
 
 4. Click on the build number link '#1', and it will take you to the build. Now click 'Console Output', and you should see some information printed out, including the execution and output of the build step you added, `echo 'Hello, World!'`.
 
@@ -282,7 +282,7 @@ Now you will create a Jenkins Pipeline. From the Dashboard, create a new item, g
 5. Now back on the job's status page, because the purpose of the job has changed, hit the 'Rename' button at the bottom of the left hand side menu. Enter the new name `give-greeting` and hit 'Rename'. You should see the new name appear in the Project's home page.
 6. Now click 'Build with Parameters'. Select the greeting you want to give and who the greeting should be directed towards. Then hit 'Build'.
 7. Under the 'Build History', click on '#2', then 'Console Output'. You should now see the invocation and result of the command `echo "${greeting}, ${receiver}!"` with the parameters that you passed.
-8. Now go back to the Jenkins Dashboard. You should see the that `hello-world` has been renamed `give-greeting`.
+8. Now go back to the Jenkins Dashboard. You should see that `hello-world` has been renamed `give-greeting`.
 
 #### __4.4.2 - Global Pipeline Variables__
 
@@ -310,7 +310,7 @@ The different types of Global Variables are
 #### __4.4.3 - A Job's Workspace__
 Recall that a workspace is a disposable directory on the file system of a Node where work can be done by a Pipeline or Job. Every Job and Pipeline you have defined is given a dedicated workspace, where the job stores any files that are generated during a build or pulled from source control. Throughout the build of a job or pipeline, you can access the workspace, whether it be to run scripts that are stored in the workspace or to create new files.
 
-To access the workspace for a Job, you can either press the 'Workspace' option in the menu on the left side of a job's home page, or from the 'Status' page there is a 'Workspace' option under the project name. If you go the freestyle project `give-greeting`, you will see the 'Workspace', but it will be empty because you have not added any files to it.
+To access the workspace for a Job, you can either press the 'Workspace' option in the menu on the left side of a job's home page, or from the 'Status' page there is a 'Workspace' option under the project name. If you go to the freestyle project `give-greeting`, you will see the 'Workspace', but it will be empty because you have not added any files to it.
 
 Since each build of a job uses the same workspace, it can be useful to clean up between runs. At the very top level of the workspace, you'll see a link in the left menu that reads 'Wipe Out Current Workspace'. Clicking this link, and selecting OK to confirm, will remove all files from the workspace. As shown in the configuration section for the jobs and pipelines, you can automatically clean up the workspace before each build, and also clean up the workspace once a build completes.
 
@@ -327,7 +327,7 @@ Let's recap Projects and Pipelines, and their various components:
     - Fundamental components are a `pipeline` block, an `agent`, a `stages` block, at least one `stage`, and `steps` within that stage.
 3. Parameters
     - Both Freestyle Project and Pipelines support parameters
-    - There are many available types, and more can be added via plug ins.
+    - There are many available types, and more can be added via plugins.
 4. Global Pipeline Variables
     - `env`
         - Default Jenkins environment variables
@@ -361,12 +361,12 @@ Now you will create a Pipeline that brings together all of the components from t
 5. In the 'Build History' section, you should see a red 'X' next to build '#1', indicating that it failed. This is because the script that is executed in the 'Deploy' `stage` does not exist in the workspace yet. In order to fix this you need to add the script to the workspace of this Pipeline on the jenkins server.
     - From the directory `JenkinsTutorial/vagrant`, run the command `vagrant ssh jenkins_server`.
     - Now on the Jenkins server, run the command `sudo cp /vagrant/calculate-sum.sh /var/lib/jenkins/workspace/bring-it-together`, to copy the script to the Pipeline's workspace.
-    - Change the file permissions with the command `sudo chmod 777 /var/lib/jenkins/workspace/bring-it-together/calculate-sum.sh`, so that the the script can be executed.
+    - Change the file permissions with the command `sudo chmod 777 /var/lib/jenkins/workspace/bring-it-together/calculate-sum.sh`, so that the script can be executed.
     - Run the command `exit` to return to your host machine.
 
-6. Now go back to the Jenkins UI and refresh the page. Now you should see 'Build with Parameters' instead of 'Build Now', because Jenkins has read the configuration written in the Pipieline code. Go ahead and hit that button to build, and enter values for the parameters before hitting 'Build' at the bottom of the page. 
+6. Now go back to the Jenkins UI and refresh the page. Now you should see 'Build with Parameters' instead of 'Build Now', because Jenkins has read the configuration written in the Pipeline code. Go ahead and hit that button to build, and enter values for the parameters before hitting 'Build' at the bottom of the page. 
 
-7. Now there should be a second build under the 'Build History'. If you click on '#2' and go to the 'Console Log', the script you added to the workspace should now have executed, and the output for each stage will match what was described in step 3 of this section.
+7. Now there should be a second build under the 'Build History'. If you click on '#2' and go to the 'Console Log', the script you added to the workspace should now have been executed, and the output for each stage will match what was described in step 3 of this section.
 
 8. Now return to the Jenkins Dashboard. You should see the new Pipeline `bring-it-together` listed under 'All' with the other two projects.
 
@@ -387,7 +387,7 @@ Within Jenkins, many projects don't happen instantaneously, and it is often usef
 3. Now click 'Build with Parameters' on the left side of your screen. Enter the value 5 for 'secondsToSleep', and hit 'Build'.
 
 4. Right away, under 'Build History', you should see the following:
-    - A circle with three blue dots in the center, and a bar moving clockwise around the perimeter of the circle. The three dots indicates that the pipeline has not been built before, and the bar in the perimeter of the circle moving means that the build is in progress.
+    - A circle with three blue dots in the center, and a bar moving clockwise around the perimeter of the circle. The three dots indicate that the pipeline has not been built before, and the bar in the perimeter of the circle moving means that the build is in progress.
     - A number, which is the build number / build ID. It's a unique identifier that Jenkins uses to organize the builds associated with a Project or Pipeline.
     - A striped line/pipe, which is a visual indicator on how long the build has been running, and how much longer before completion. Once Jenkins has built a Project or Pipeline several times, this bar gives a better indication on how much longer the job might run. 
 
@@ -440,7 +440,7 @@ An important part of any continuous integration or continuous deployment process
 Recall that an artifact is an immutable file generated during a build which is archived onto the Jenkins Controller. Most Projects and Pipelines in Jenkins will generate some sort of artifacts in the form of a report, product, or set of files. You can access the artifacts for a particular Project or Pipeline two ways:
 
 1. From a project's 'Status' page, there is an icon of an open cardboard box with the text 'Last Successful Artifacts'. The artifacts are listed underneath this, or you can click on the link 'Last Successful Artifacts' and access them from there. These artifacts are from the last successful build of the project, so that if the last few builds have failed you can still access the most recent artifacts easily.
-2. If you click on a particular build of a the project, and it successfully generated artifacts, then there will be the same icon on the build's 'Status' page next to the words 'Build Artifacts'. Again, the artifacts are listed underneath this, or you can click on the link 'Build Artifacts' to access them.
+2. If you click on a particular build of a project, and it successfully generated artifacts, then there will be the same icon on the build's 'Status' page next to the words 'Build Artifacts'. Again, the artifacts are listed underneath this, or you can click on the link 'Build Artifacts' to access them.
 
 To take a look at some artifacts, go to the Pipeline `monitoring-build-state`. You probably already noticed, but the last stage of the pipeline has a command `archiveArtifacts` that archives the specified artifacts. There should be artifacts available in both of the ways listed before, so find them either under 'Last Successful Artifacts' or click on an individual build to access the artifacts from it.
 
@@ -449,16 +449,16 @@ To take a look at some artifacts, go to the Pipeline `monitoring-build-state`. Y
 
 For the most part, the goal is to integrate and use Jenkins with a SCM system, so that changes in an environment, like GitHub, are automatically pushed back into the Jenkins environment. This can be done through Webhooks.
 
-NOTE: For this section you will need to sign up for [ngrok](https://ngrok.com/). There is a free and paid version, but for the purposes of this tutorial you will only need the FREE version. If you don't wish to signup for and configure ngrok on your Jenkins server, then skip this section and continue to Part 6.
+NOTE: For this section you will need to sign up for [ngrok](https://ngrok.com/). There is a free and paid version, but for the purposes of this tutorial you will only need the FREE version. If you don't wish to sign up for and configure ngrok on your Jenkins server, then skip this section and continue to Part 6.
 
 
 #### __5.4.1 - Create a Personal Access Token in Github__
-Before you can communicate with GitHub from Jenkins, you need generate a GitHub Personal Access Token that will be used by Jenkins.
+Before you can communicate with GitHub from Jenkins, you need to generate a GitHub Personal Access Token that will be used by Jenkins.
 
 1. To create a Personal Access Token in your Github environment, go to [this link](https://github.com/settings/tokens/new). Also, the steps to get to that link are:
     - Go to [Github](https://github.com)
     - Click on your user icon and select '[Settings](https://github.com/settings)' from the dropdown menu. 
-    - Then scroll down and click on '[Developer Settings](https://github.com/settings/apps)' in the side bar. 
+    - Then scroll down and click on '[Developer Settings](https://github.com/settings/apps)' in the sidebar. 
     - Click on the option '[Personal access tokens](https://github.com/settings/tokens)' and then '[Generate new token](https://github.com/settings/tokens/new)'. 
 2. For creating the token:
     - Give it the Note/Name `jenkins-integration`. 
@@ -470,7 +470,7 @@ Before you can communicate with GitHub from Jenkins, you need generate a GitHub 
 
 #### __5.4.2 - Create Necessary Credentials in Jenkins__
 In order to connect to Github from Jenkins and trigger builds with webhooks, you need to create two credentials in Jenkins.
-1. From the Jenkins Dashboard hit 'Manage Jenkins', then under the Security section hit 'Manage Credentials'. Under the section 'Stores scoped to Jenkins', there is one option with a Store and Domains. Click on the link `(global)` under Domains. Now on the the left side of the screen there is an option 'Add Credentials'.
+1. From the Jenkins Dashboard hit 'Manage Jenkins', then under the Security section hit 'Manage Credentials'. Under the section 'Stores scoped to Jenkins', there is one option with a Store and Domains. Click on the link `(global)` under Domains. Now on the left side of the screen there is an option 'Add Credentials'.
 2. The first Credential that you are going to add is your GitHub Personal Access Token so that you can establish a connection to GitHub. Click 'Add Credentials', and enter the following for each field:
     - __Kind__: Select 'Secret text' from the dropdown menu.
     - __Secret__: Enter your Github Personal Access Token.
@@ -505,9 +505,9 @@ It is not possible to add a webhook for Jenkins running on `localhost` as it doe
 
 3. Next you need to connect your ngrok account to your Jenkins server.
     - From the directory `JenkinsTutorial\vagrant`, run the command `vagrant ssh jenkins_server`.
-    - Copy and paste the command shown for you under step 2 on the ngrok steup page. It should be `ngrok authtoken {YOUR_TOKEN}`.
+    - Copy and paste the command shown for you under step 2 on the ngrok setup page. It should be `ngrok authtoken {YOUR_TOKEN}`.
 
-4. Now you need to setup the tunnel.
+4. Now you need to set up the tunnel.
     - Run the command `ngrok http 8080`. You should then see text similar to the following:
         ```
         ngrok by @inconshreveable                                            (Ctrl+C to quit)  
@@ -530,15 +530,15 @@ It is not possible to add a webhook for Jenkins running on `localhost` as it doe
 
 #### __5.4.5 - Create a Webhook in GitHub__
 
-Recall the fact that you forked this repository rather than just simply cloning it. The reason for doing so was for this section here. In order to create a Webhook for a repository and successfuly use your access token and username, the repo must be associated with your own Github profile.
+Recall the fact that you forked this repository rather than just simply cloning it. The reason for doing so was for this section here. In order to create a Webhook for a repository and successfully use your access token and username, the repo must be associated with your own Github profile.
 
 1. To create a Webhook for your repository that you forked from this tutorial, go to `https://github.com/{YOUR_USERNAME}/JenkinsTutorial/settings/hooks/new`. The steps to get here are:
     - Go to `https://github.com/{YOUR_USERNAME}/JenkinsTutorial/`
     - Click on 'Settings' in the bar of options underneath the name of the repo.
-    - Click 'Webhooks' in the side bar that shows up.
+    - Click 'Webhooks' in the sidebar that shows up.
     - Then hit 'Add webhook'.
 
-2. To create the Webhook, follow the next stetps:
+2. To create the Webhook, follow the next steps:
     - __Payload URL__: This will be the 'Forwarding' URL that you copied after running `ngrok http 8080`, with `/github-webhook/` appended onto it. It will have the form `https://{YOUR_URL_ID}.ngrok.io/github-webhook/`. DO NOT FORGET to add `/github-webhook/`.
     - __Content Type__: Select 'application/json'
     - __Which events would you like to trigger this webhook?__: Select the option 'Send me everything'.
@@ -555,7 +555,7 @@ Recall the fact that you forked this repository rather than just simply cloning 
 
 
 #### __5.4.6 - Create a Job in Jenkins and Trigger with a Webhook__
-It is possible to configure Freestyle Jobs, Pipeline Jobs, and Multiconfigration Pipeline Jobs for integration with GitHub webhooks. In this case you are going to create a Pipeline.
+It is possible to configure Freestyle Jobs, Pipeline Jobs, and Multiconfiguration Pipeline Jobs for integration with GitHub webhooks. In this case you are going to create a Pipeline.
 
 1. From the Jenkins Dashboard, hit 'New Item', give it the name `github-webhook` and select 'Pipeline'.
 
@@ -635,7 +635,7 @@ Within a Jenkins environment, you often start out with a single machine. However
 
 #### __6.2.2 - Create a Pipeline with a Docker Agent__
 
-Now that you have an environment capabale of launching a Docker resource, you can create a new Pipeline that will use Docker as an agent.
+Now that you have an environment capable of launching a Docker resource, you can create a new Pipeline that will use Docker as an agent.
 1. From the Dashboard, create a new item, call it `using-docker-agent`, and make it a Pipeline. 
 2. On the pipeline's configuration page, go down to the 'Pipeline' section, and copy and paste the contents of `JenkinsTutorial\pipelines\Pipeline_Part6_docker-agent.Jenkinsfile` into the script block. This Pipeline simply launches in a python Docker container and runs a simple shell script to show the version of python.
 3. Hit 'Save' and then hit 'Build Now'.
@@ -643,7 +643,7 @@ Now that you have an environment capabale of launching a Docker resource, you ca
 5. Now return to the Jenkins Dashboard. You should see the new Pipeline `using-docker-agent` listed under 'All' with the other six projects.
 
 ### 6.3 - Further Node Configuration
-As your Jenkins environment grows and the number of potential agents increases, you may want to start targeting builds to toward specific nodes. For example, perhaps you have a machine that can only run docker instances, or a machine that can only run certain applications that require specific resources, like GPU or CPU. It is important to have the ability to select where these processes run, which can be done through labels. Recall that a label is a user-defined text for grouping Agents, typically by similar functionality or capability.
+As your Jenkins environment grows and the number of potential agents increases, you may want to start targeting builds toward specific nodes. For example, perhaps you have a machine that can only run docker instances, or a machine that can only run certain applications that require specific resources, like GPU or CPU. It is important to have the ability to select where these processes run, which can be done through labels. Recall that a label is a user-defined text for grouping Agents, typically by similar functionality or capability.
 
 1. To give a Node a label, from the Jenkins Dashboard click 'Manage Jenkins', then under the 'System Configuration' section click 'Manage Nodes and Clouds'.
 2. In this case you will give a label to the node 'worker', so click on that node. Then hit 'Configure' in the menu.
@@ -665,9 +665,9 @@ In Jenkins Pipelines you may want to define additional steps following the compl
 
 The `post` block supports a number of different condition blocks, allowing the execution of steps inside each condition depending on the build status of the Pipeline or stage. The supported condition blocks are shown below, appearing in the order that they would be executed if written:
 1. `always`
-    - Run the steps in this section regardless of the build status of the Pipeline or stage that preceeds it.
+    - Run the steps in this section regardless of the build status of the Pipeline or stage that precedes it.
 2. `changed`
-    - Only run the steps in this section if the current build of a Pipeline or stage has a different build status than the previous build.
+    - Only run the steps in this section if the current build of a Pipeline or stage has a different build status from the previous build.
 3. `fixed`
     - Only run the steps in this section if the current build of a Pipeline or stage is successful and the previous build failed or was unstable.
 4. `regression`
