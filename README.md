@@ -1,40 +1,8 @@
 # An Introduction to Jenkins
 
-
-## What is Jenkins?
-
-Jenkins is an open source framework used to manage all types of automation, from software builds and application testing, to deployments and more. It is a highly extensible automation server that can be used as a simple continuous integration server, or transformed into the continuous delivery hub for any project.
-
-## Why Use Jenkins?
-1. Open Source / Free
-    - As an open source project, there is a community around Jenkins that provides large support and thorough documentation.
-    - Anyone can examine the code, find and fix issues, or develop new features.
-    - There are hundreds of plugins available to support building, deploying and automating any project, and it is easy to create your own.
-2. Extensibility and Flexibility
-    - There are hundreds of community developed plugins, allowing you to integrate with practically every tool in the CI/CD toolchain. By using plugins you can extend the features and functionality of Jenkins, providing limitless possibilities.
-    - Jenkins is distributed, giving you the ability to easily distribute work across multiple machines. This allows you to drive builds, tests and deployments faster.
-3. Ease of Use
-    - As self-contained, java-based, and ready to run out-of-the-box for all major operating systems, Jenkins has a readily available and easy installation.
-    - Jenkins can be set up and configured via its web interface, which includes on-the-fly error checks and built-in help. There is documentation and examples directly included or easily accessible from your environment.
-    - Both the Jenkins UI and documentation are user-friendly, intuitive, and easy to navigate.
-
-## What Can Jenkins Do?
-
-Jenkins can be easily configured and extended, and comes with a multitude of plugins which allow great flexibility. Below are some of the many uses for Jenkins:
-
-1. Maintain, orchestrate, and accelerate the entire software development lifecycle.
-2. Integrate with various SCM systems.
-3. Manage and control software delivery processes throughout the entire lifecycle
-    - Build, Document, Test, Package, Deploy
-4. Generate reports.
-5. Push to various repositories.
-6. Notify stakeholders of build status.
-    - Slack, Email, etc
-
-And due to the plethora of available plugins in the community, Jenkins can do so much more.
+Before going through the tutorial outlined in this README, view the pdf `JenkinsTutorial/presentation` for overview of CI/CD and more information on Jenkins - what is it, why you should use it, sample architecture, etc.
 
 ___
-
 
 ## Part 1 - Setup 
 
@@ -889,6 +857,7 @@ Additionally, next steps to consider are exploring the official [Jenkins](https:
 ___
 
 ## Sources
+
 All of this information can be found among the resources and pages at https://www.jenkins.io.
 
-For information on sources used for this tutorial, see the last slide in the presentation located at `JenkinsTutorial/presentation`
+For information on sources used for this tutorial, see the last slide in the presentation located at `JenkinsTutorial/presentation`.
