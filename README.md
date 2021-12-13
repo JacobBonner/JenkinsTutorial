@@ -4,6 +4,59 @@ Before going through the tutorial outlined in this README, view the pdf `Jenkins
 
 ___
 
+## Outline
+
+1. Part 1 - Setup
+2. Part 2 - Key Terminology
+3. Part 3 - Jenkins User Interface
+4. Part 4 - Projects and Pipelines
+    - 4.1 - Types of Items
+    - 4.2 - Freestyle Jobs/Projects
+        - 4.2.1 - Job Configuration
+        - 4.2.2 - Adding a Build Step and Building the Job
+    - 4.3 - Pipelines
+        - 4.3.1 - What is Jenkins Pipeline?
+        - 4.3.2 - Why Pipeline?
+        - 4.3.3 - Pipeline Concepts and Syntax
+        - 4.3.4 - Pipeline Job configuration
+        - 4.3.5 - Adding Pipeline Code and Building the Pipeline
+    - 4.4 - Parameters, Global Pipeline Variables, and a Job's Workspace
+        - 4.4.1 - Parametrizing a Job
+        - 4.4.2 - Global Pipeline Variables
+        - 4.4.3 - A Job's Workspace
+    - 4.5 Bringing It All Together
+        - 4.5.1 - Recap
+        - 4.5.2 - Creating a More Advanced Pipeline
+5. Part 5
+    - 5.1 - Tracking/Monitoring Build State
+    - 5.2 - Polling SCM for Build Triggering
+    - 5.3 - Build Artifacts
+    - 5.4 - Triggering Builds with Github Webhooks
+        - 5.4.1 - Create a Personal Access Token in Github
+        - 5.4.2 - Create Necessary Credentials in Jenkins
+        - 5.4.3 - Configure GitHub Server in Jenkins
+        - 5.4.4 - Setup and Configure ngrok
+        - 5.4.5 - Create a Webhook in GitHub
+        - 5.4.6 - Create a Job in Jenkins and Trigger with a Webhook
+6. Part 6 - Agents and Distributing Builds
+    - 6.1 - Adding an SSH Build Agent
+        - 6.1.1 - Retrieve Private SSH Key from Worker
+        - 6.1.2 - Add a Node in Jenkins
+    - 6.2 - Using Docker Images for Agents
+        - 6.2.1 - Configure Jenkins for Docker
+        - 6.2.2 - Create a Pipeline with a Docker Agent
+    - 6.3 - Further Node Configuration 
+7. Part 7 - Testing and Post-Execution Behaviors
+    - 7.1 - Post-Execution Behaviors
+    - 7.2 - Testing
+8. Part 8 - REST API
+    - 8.1 - What can you do with the REST API
+    - 8.2 - URL Tips for Fetching Data
+    - 8.3 - Triggering a build via the REST API
+    - 8.4 - Retrieving Various Information via the REST API
+9. Part 9 - Further Topics and Next Steps
+
+
 ## Part 1 - Setup 
 
 1. Install Prerequisites: [VirtualBox](https://www.virtualbox.org/wiki/Downloads) , [Vagrant](https://www.vagrantup.com/downloads) , [Git](https://git-scm.com/downloads) , and a Terminal with an SSH client ([PS Core](https://github.com/powershell/powershell), [MobaXterm](https://mobaxterm.mobatek.net/), etc).
@@ -283,9 +336,9 @@ To access the workspace for a Job, you can either press the 'Workspace' option i
 Since each build of a job uses the same workspace, it can be useful to clean up between runs. At the very top level of the workspace, you'll see a link in the left menu that reads 'Wipe Out Current Workspace'. Clicking this link, and selecting OK to confirm, will remove all files from the workspace. As shown in the configuration section for the jobs and pipelines, you can automatically clean up the workspace before each build, and also clean up the workspace once a build completes.
 
 
-### 4.6 Bringing It All Together
+### 4.5 - Bringing It All Together
 
-#### __4.6.1 - Recap__
+#### __4.5.1 - Recap__
 Let's recap Projects and Pipelines, and their various components:
 1. Freestyle Projects
     - Many configuration options, such as parametrization
@@ -307,7 +360,7 @@ Let's recap Projects and Pipelines, and their various components:
     - Each job has a workspace on the node that it builds on
     - Can run scripts and access files stored in the workspace 
 
-#### __4.6.2 - Creating a More Advanced Pipeline__
+#### __4.5.2 - Creating a More Advanced Pipeline__
 Now you will create a Pipeline that brings together all of the components from the previous sections.
 1. From the Dashboard, hit 'New Item', name it `bring-it-together`, and make it a 'Pipeline'.
 2. Now go down to the 'Pipeline' section of the configuration page. Copy and paste the pipeline from the file `JenkinsTutorial\pipelines\Pipeline_Part4_bring-it-together.Jenkinsfile` into the script block on the configuration page.
@@ -552,7 +605,7 @@ Within a Jenkins environment, you often start out with a single machine. However
 
 ### 6.1 - Adding an SSH Build Agent
 
-#### __Retrieve Private SSH Key from Worker__
+#### __6.1.1 - Retrieve Private SSH Key from Worker__
 
 1. From your terminal in the directory `JenkinsTutorial/vagrant`, run the command `vagrant ssh jenkins_worker`. Now you should be on the jenkins worker node.
 
@@ -560,7 +613,7 @@ Within a Jenkins environment, you often start out with a single machine. However
 
 3. Now run `exit` to return to your host.
 
-#### __Add a Node in Jenkins__
+#### __6.1.2 - Add a Node in Jenkins__
 
 1. From the Jenkins Dashboard, click 'Manage Jenkins' on the left part of the screen, then under the 'System Configuration' section click 'Manage Nodes and Clouds'.
 2. On the left side of the screen, click 'New Node'. Give the node the name 'worker', and check the box (circle) 'Permanent Agent'. Then press 'OK'.
