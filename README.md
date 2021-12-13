@@ -50,7 +50,7 @@ ___
     - 7.1 - Post-Execution Behaviors
     - 7.2 - Testing
 8. Part 8 - REST API
-    - 8.1 - What can you do with the REST API
+    - 8.1 - What can you do with the REST API?
     - 8.2 - URL Tips for Fetching Data
     - 8.3 - Triggering a build via the REST API
     - 8.4 - Retrieving Various Information via the REST API
