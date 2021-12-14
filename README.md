@@ -27,7 +27,7 @@ ___
     - 4.5 Bringing It All Together
         - 4.5.1 - Recap
         - 4.5.2 - Creating a More Advanced Pipeline
-5. Part 5
+5. Part 5 - Builds
     - 5.1 - Tracking/Monitoring Build State
     - 5.2 - Polling SCM for Build Triggering
     - 5.3 - Build Artifacts
